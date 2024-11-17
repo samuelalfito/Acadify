@@ -1,4 +1,4 @@
-package com.bangkit.raionlearncompose2.util
+package com.acadify.utils
 
 typealias SimpleResource = Resource<Unit>
 
