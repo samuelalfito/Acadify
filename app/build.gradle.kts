@@ -1,7 +1,10 @@
+import org.gradle.kotlin.dsl.test
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -71,7 +74,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.compiler)
     implementation(libs.coil.compose)
-    implementation(libs.firebase.auth.ktx)
     
+    // Firebase
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
     implementation(platform(libs.firebase.bom))
 }
