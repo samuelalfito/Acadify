@@ -71,6 +71,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.compiler)
     implementation(libs.coil.compose)
+    implementation(libs.firebase.auth.ktx)
     
     implementation(platform(libs.firebase.bom))
 }
