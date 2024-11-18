@@ -1,6 +1,12 @@
-package com.acadify.ui.theme
+package com.acadify.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
+
+val BlueDark = Color(0xFF141927)
+val BlueDark2 = Color(0xFF21283F)
+
+val BlueLight = Color(0xFF1E2A47)
+val BlueLight2 = Color(0xFF2A3A5E)
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
