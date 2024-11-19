@@ -12,6 +12,7 @@ object Nunito {
     val regular = FontFamily(Font(R.font.nunito_regular, FontWeight.Normal))
     val semibold = FontFamily(Font(R.font.nunito_semibold, FontWeight.SemiBold))
     val bold = FontFamily(Font(R.font.nunito_bold, FontWeight.Bold))
+    val extrabold = FontFamily(Font(R.font.nunito_extrabold, FontWeight.ExtraBold))
 }
 
 // Set of Material typography styles to start with
@@ -23,7 +24,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = Nunito.bold,
+        fontFamily = Nunito.extrabold,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
@@ -33,5 +34,18 @@ val Typography = Typography(
         fontSize = 15.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = Nunito.bold,
+        fontSize = 18.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.sp
     )
+)
+
+val NunitoFontFamily = FontFamily(
+    Font(R.font.nunito_regular, FontWeight.Normal),
+    Font(R.font.nunito_semibold, FontWeight.SemiBold),
+    Font(R.font.nunito_bold, FontWeight.Bold),
+    Font(R.font.nunito_extrabold, FontWeight.ExtraBold)
 )
