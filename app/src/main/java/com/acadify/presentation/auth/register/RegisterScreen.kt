@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,9 +34,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.acadify.R
+import com.acadify.model.repository.network.FireAuth
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -43,8 +46,10 @@ fun RegisterScreen(navController: NavController) {
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
     var passwordVisible = remember { mutableStateOf(false) }
+    var confirmPassword = remember { mutableStateOf("") }
+    var confirmPasswordVisible = remember { mutableStateOf(false) }
+    val fireAuth = FireAuth()
     val context = LocalContext.current
-    val auth = FirebaseAuth.getInstance()
     
     Column(
         modifier = Modifier
@@ -103,10 +108,9 @@ fun RegisterScreen(navController: NavController) {
                         .align(Alignment.CenterVertically)
                         .padding(horizontal = 10.dp)
                 )
-                Divider(
+                VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(1.dp)
                         .padding(vertical = 10.dp),
                     color = Color.Gray
                 )
@@ -135,26 +139,78 @@ fun RegisterScreen(navController: NavController) {
                 )
             }
         }
+        Spacer(modifier = Modifier.height(20.dp))
+        Card(
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.lock),
+                    contentDescription = "Email Icon",
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(horizontal = 10.dp)
+                )
+                VerticalDivider(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(vertical = 10.dp),
+                    color = Color.Gray
+                )
+                TextField(
+                    modifier = Modifier.weight(1f),
+                    value = confirmPassword.value,
+                    onValueChange = { newValue -> confirmPassword.value = newValue },
+                    placeholder = { Text("Confirm Password") },
+                    visualTransformation = if (confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    maxLines = 1,
+                    singleLine = true
+                )
+                Icon(
+                    painter = painterResource(id = if (confirmPasswordVisible.value) R.drawable.eye_on else R.drawable.eye_off),
+                    contentDescription = if (confirmPasswordVisible.value) "Hide Password" else "Show Password",
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(end = 20.dp)
+                        .clickable {
+                            confirmPasswordVisible.value = !confirmPasswordVisible.value
+                        }
+                )
+            }
+        }
         Spacer(modifier = Modifier.padding(20.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
                 onClick = {
-                    auth.createUserWithEmailAndPassword(email.value, password.value)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT)
-                                    .show()
-                                navController.navigate("register_screen")
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "Register Failed: ${task.exception?.message}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+//                    auth.createUserWithEmailAndPassword(email.value, password.value)
+//                        .addOnCompleteListener { task ->
+//                            if (task.isSuccessful) {
+//                                Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT)
+//                                    .show()
+//                                navController.navigate("register_screen")
+//                            } else {
+//                                Toast.makeText(
+//                                    context,
+//                                    "Register Failed: ${task.exception?.message}",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }
+//                        }
+                    if (password != confirmPassword) {
+                        Toast.makeText(context, "Password doesn't match", Toast.LENGTH_SHORT).show()
+                    } else if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                        fireAuth.register(email.value, password.value)
+                        navController.navigate("login_screen")
+                    }
                 }) {
                 Text(
                     text = "Register"
@@ -167,4 +223,10 @@ fun RegisterScreen(navController: NavController) {
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewRegisterScreen() {
+    RegisterScreen(navController = NavController(LocalContext.current))
 }
