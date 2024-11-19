@@ -6,75 +6,101 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.acadify.model.data.MataKuliah
-import androidx.compose.foundation.lazy.items
 
 @Composable
 fun KelolaNilaiScreen(navController: NavController) {
     var isTambahNilaiScreenVisible = remember { mutableStateOf(false) }
-    val mataKuliahList = remember {
-        mutableStateOf(
-            listOf(
-                MataKuliah("Matematika", 90f, 3f),
-                MataKuliah("Fisika", 85f, 3f),
-                MataKuliah("Kimia", 88f, 3f),
-                MataKuliah("Biologi", 92f, 3f),
-                MataKuliah("Sejarah", 80f, 3f),
-                MataKuliah("Geografi", 87f, 3f),
-                MataKuliah("Ekonomi", 89f, 3f),
-                MataKuliah("Sosiologi", 91f, 3f),
-                MataKuliah("Bahasa Inggris", 93f, 3f),
-                MataKuliah("Bahasa Indonesia", 86f, 3f)
-            )
-        )
-    }
+    var isEditNilaiScreenVisible = remember { mutableStateOf(false) }
+    var isDeleteNilaiScreenVisible = remember { mutableStateOf(false) }
+    val selectedMataKuliah = remember { mutableStateOf<MataKuliah?>(null) }
+    val viewModel: KelolaNilaiViewModel = viewModel()
+    val mataKuliahList = viewModel.mataKuliahList.collectAsState()
     
-    fun updateMataKuliah(mataKuliah: MataKuliah) {
-        mataKuliahList.value = mataKuliahList.value.map {
-            if (it.nama == mataKuliah.nama) mataKuliah else it
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+        ) {
+            Card(modifier = Modifier.clickable {
+                isTambahNilaiScreenVisible.value = !isTambahNilaiScreenVisible.value
+            }) {
+                Text(
+                    "+",
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .size(20.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+            Card(modifier = Modifier.clickable {
+                navController.navigate("prediksi_ip")
+            }) {
+                Text(
+                    "Prediksi IP", modifier = Modifier
+                        .padding(20.dp)
+                        .height(20.dp)
+                )
+            }
         }
-    }
-    
-    
-    fun deleteMataKuliah(mataKuliah: MataKuliah) {
-        mataKuliahList.value = mataKuliahList.value.filter { it.nama != mataKuliah.nama }
-    }
-    
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
             item {
-                Row {
-                    Card(modifier = Modifier.clickable() {
-                        isTambahNilaiScreenVisible.value = !isTambahNilaiScreenVisible.value
-                    }) {
-                        Text("+")
-                    }
-                    Card(modifier = Modifier.clickable() {
-                        navController.navigate("prediksi-ip")
-                    }) {
-                        Text("Prediksi IP")
+                Spacer(modifier = Modifier.height(50.dp))
+            }
+            if (mataKuliahList.value.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                    ) {
+                        Text("Mata Kuliah masih Kosong")
                     }
                 }
-            }
-            items(mataKuliahList.value) { mataKuliah ->
-                KelolaNilai(
-                    mataKuliah = mataKuliah,
-                    onEditClick = { updateMataKuliah(it) },
-                    onDeleteClick = { deleteMataKuliah(it) })
+            } else {
+                items(mataKuliahList.value) { mataKuliah ->
+                    KelolaNilai(mataKuliah = mataKuliah, onEditClick = {
+                        selectedMataKuliah.value = mataKuliah
+                        isEditNilaiScreenVisible.value = true
+                    }, onDeleteClick = {
+                        selectedMataKuliah.value = mataKuliah
+                        isDeleteNilaiScreenVisible.value = true
+                    })
+                }
             }
         }
     }
@@ -86,12 +112,52 @@ fun KelolaNilaiScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = {
-                isTambahNilaiScreenVisible.value = !isTambahNilaiScreenVisible.value
-            }) {
-                Text("X")
-            }
-            TambahNilaiScreen()
+            TambahNilaiScreen(viewModel, isTambahNilaiScreenVisible)
+        }
+    }
+    if (isEditNilaiScreenVisible.value && selectedMataKuliah.value != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            EditNilaiScreen(viewModel, selectedMataKuliah.value!!, isEditNilaiScreenVisible)
+        }
+    }
+    if (isDeleteNilaiScreenVisible.value && selectedMataKuliah.value != null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AlertDialog(
+                onDismissRequest = { isDeleteNilaiScreenVisible.value = false },
+                title = { Text("Delete Nilai") },
+                text = {
+                    DeleteNilaiScreen(
+                        viewModel,
+                        selectedMataKuliah.value!!,
+                        isDeleteNilaiScreenVisible
+                    )
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        // Handle delete action
+                        isDeleteNilaiScreenVisible.value = false
+                    }) {
+                        Text("Delete")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { isDeleteNilaiScreenVisible.value = false }) {
+                        Text("Cancel")
+                    }
+                }
+            )
         }
     }
 }
@@ -99,5 +165,5 @@ fun KelolaNilaiScreen(navController: NavController) {
 @Preview
 @Composable
 fun KelolaNilaiScreenPreview() {
-    KelolaNilaiScreen(navController = NavController(LocalContext.current))
+    KelolaNilaiScreen(navController = rememberNavController())
 }
