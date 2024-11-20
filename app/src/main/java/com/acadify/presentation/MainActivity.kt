@@ -11,6 +11,7 @@ import com.acadify.presentation.auth.login.LoginScreen
 import com.acadify.presentation.auth.register.RegisterScreen
 import com.acadify.presentation.kelolanilai.KelolaNilaiScreen
 import com.acadify.presentation.prediksiip.PrediksiIPScreen
+import com.acadify.presentation.prediksiip.PrediksiIPViewModel
 import com.acadify.presentation.simulasinilaiipk.SimulasiNilaiIPKScreen
 import com.acadify.presentation.ui.theme.AcadifyTheme
 import com.google.firebase.FirebaseApp
