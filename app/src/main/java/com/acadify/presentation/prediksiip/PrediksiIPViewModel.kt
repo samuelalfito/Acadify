@@ -38,10 +38,10 @@ class PrediksiIPViewModel : ViewModel() {
                     resource.data?.forEach { mataKuliah ->
                         mataKuliah.komponenNilai?.let { komponenNilai ->
                             val nilaiTugas =
-                                komponenNilai.nilaiTugas * komponenNilai.persentaseTugas
-                            val nilaiKuis = komponenNilai.nilaiKuis * komponenNilai.persentaseKuis
-                            val nilaiUTS = komponenNilai.nilaiUTS * komponenNilai.persentaseUTS
-                            val nilaiUAS = komponenNilai.nilaiUAS * komponenNilai.persentaseUAS
+                                komponenNilai.nilaiTugas * komponenNilai.persentaseTugas / 100
+                            val nilaiKuis = komponenNilai.nilaiKuis * komponenNilai.persentaseKuis / 100
+                            val nilaiUTS = komponenNilai.nilaiUTS * komponenNilai.persentaseUTS / 100
+                            val nilaiUAS = komponenNilai.nilaiUAS * komponenNilai.persentaseUAS / 100
                             val totalNilai = nilaiTugas + nilaiKuis + nilaiUTS + nilaiUAS
                             
                             updatedPrediksi.add(
@@ -62,7 +62,7 @@ class PrediksiIPViewModel : ViewModel() {
                     
                     _prediksiIP.value = PrediksiIP(
                         nama = updatedPrediksi.map { it.nama },
-                        nilaiAkhir = updatedPrediksi.map { it.nilaiAkhir },
+                        nilaiAkhir = updatedPrediksi.map { it.nilaiAkhir / 25 },
                         prediksiIP = averageNilaiAkhir
                     )
                 }
