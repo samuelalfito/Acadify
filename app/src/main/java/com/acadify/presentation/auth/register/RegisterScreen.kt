@@ -36,9 +36,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.acadify.R
 import com.acadify.model.repository.network.FireAuth
+import com.acadify.presentation.auth.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -48,7 +50,7 @@ fun RegisterScreen(navController: NavController) {
     var passwordVisible = remember { mutableStateOf(false) }
     var confirmPassword = remember { mutableStateOf("") }
     var confirmPasswordVisible = remember { mutableStateOf(false) }
-    val fireAuth = FireAuth()
+    val viewModel: AuthViewModel = viewModel()
     val context = LocalContext.current
     
     Column(
@@ -191,24 +193,10 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
                 onClick = {
-//                    auth.createUserWithEmailAndPassword(email.value, password.value)
-//                        .addOnCompleteListener { task ->
-//                            if (task.isSuccessful) {
-//                                Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT)
-//                                    .show()
-//                                navController.navigate("register_screen")
-//                            } else {
-//                                Toast.makeText(
-//                                    context,
-//                                    "Register Failed: ${task.exception?.message}",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                        }
                     if (password != confirmPassword) {
                         Toast.makeText(context, "Password doesn't match", Toast.LENGTH_SHORT).show()
                     } else if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
-                        fireAuth.register(email.value, password.value)
+                        viewModel.register(email.value, password.value)
                         navController.navigate("login_screen")
                     }
                 }) {
