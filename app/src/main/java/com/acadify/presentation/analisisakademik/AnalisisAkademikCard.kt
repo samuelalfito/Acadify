@@ -57,7 +57,7 @@ fun AnalisisAcademikCard(
 fun getColorForValue(value: Float): Color {
     val green = Color(0xFF009A00) // Hijau
     val red = Color(0xFFFF0000) // Merah
-    val fraction = value / 100f
+    val fraction = value / 4f
     return lerp(red, green, fraction)
 }
 
