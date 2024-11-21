@@ -54,7 +54,7 @@ fun TambahNilaiScreen(
                     showWarningDialog.value = false
                     isTambahNilaiScreenVisible.value = false
                 }) {
-                    Text("Ya")
+                    Text("Iya")
                 }
             },
             dismissButton = {
@@ -117,9 +117,11 @@ fun TambahNilaiScreen(
                         )
                         OutlinedTextField(value = persentaseTugas.value,
                             onValueChange = { newValue: String ->
-                                val intValue = newValue.toInt()
+                                val intValue = newValue.toIntOrNull() ?: ""
                                 if (intValue in 0..100) {
                                     persentaseTugas.value = intValue.toString()
+                                } else if (newValue.isEmpty()) {
+                                    persentaseTugas.value = ""
                                 }
                             },
                             modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
@@ -142,9 +144,11 @@ fun TambahNilaiScreen(
                         )
                         OutlinedTextField(value = persentaseKuis.value,
                             onValueChange = { newValue: String ->
-                                val intValue = newValue.toIntOrNull()
-                                if (intValue != null && intValue in 0..100) {
+                                val intValue = newValue.toIntOrNull() ?: ""
+                                if (intValue in 0..100) {
                                     persentaseKuis.value = intValue.toString()
+                                } else if (newValue.isEmpty()) {
+                                    persentaseTugas.value = ""
                                 }
                             },
                             modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
@@ -167,9 +171,11 @@ fun TambahNilaiScreen(
                         )
                         OutlinedTextField(value = persentaseUTS.value,
                             onValueChange = { newValue: String ->
-                                val intValue = newValue.toIntOrNull()
-                                if (intValue != null && intValue in 0..100) {
+                                val intValue = newValue.toIntOrNull() ?: ""
+                                if (intValue in 0..100) {
                                     persentaseUTS.value = intValue.toString()
+                                } else if (newValue.isEmpty()) {
+                                    persentaseTugas.value = ""
                                 }
                             },
                             modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
@@ -192,9 +198,11 @@ fun TambahNilaiScreen(
                         )
                         OutlinedTextField(value = persentaseUAS.value,
                             onValueChange = { newValue: String ->
-                                val intValue = newValue.toIntOrNull()
-                                if (intValue != null && intValue in 0..100) {
+                                val intValue = newValue.toIntOrNull() ?: ""
+                                if (intValue in 0..100) {
                                     persentaseUAS.value = intValue.toString()
+                                } else if (newValue.isEmpty()) {
+                                    persentaseTugas.value = ""
                                 }
                             },
                             modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
