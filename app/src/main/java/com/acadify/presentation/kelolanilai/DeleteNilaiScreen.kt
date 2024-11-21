@@ -37,18 +37,18 @@ fun DeleteNilaiScreen(
     AlertDialog(
         onDismissRequest = { isDeleteNilaiScreenVisible.value = false },
         title = { Text("Delete Nilai") },
-        text = { DeleteNilaiScreen(viewModel, mataKuliah, isDeleteNilaiScreenVisible) },
+        text = { Text("Apakah anda yakin menghapus nilai?") },
         confirmButton = {
             Button(onClick = {
-                // Handle delete action
+                viewModel.deleteMataKuliah("1")
                 isDeleteNilaiScreenVisible.value = false
             }) {
-                Text("Delete")
+                Text("Hapus")
             }
         },
         dismissButton = {
             Button(onClick = { isDeleteNilaiScreenVisible.value = false }) {
-                Text("Cancel")
+                Text("Tidak")
             }
         }
     )
