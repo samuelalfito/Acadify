@@ -79,4 +79,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(platform(libs.firebase.bom))
+    
+    // Coroutines
+    implementation(libs.accompanist.swiperefresh)
 }
