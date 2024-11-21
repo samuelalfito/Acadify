@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import com.acadify.R
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.TambahNilai
+import com.acadify.presentation.ui.theme.Blue40
+import com.acadify.presentation.ui.theme.Green80
 import com.acadify.presentation.ui.theme.PurpleBlue40
 
 @Composable
@@ -34,7 +36,11 @@ fun SimulasiNilaiIPKCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp),
-        colors = CardDefaults.cardColors(PurpleBlue40),
+        colors = CardDefaults.cardColors(
+            if (onEditClick != null && onDeleteClick != null) {
+                Green80
+            } else Blue40
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
