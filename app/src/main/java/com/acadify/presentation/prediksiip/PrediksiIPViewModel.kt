@@ -63,7 +63,7 @@ class PrediksiIPViewModel : ViewModel() {
                     _prediksiIP.value = PrediksiIP(
                         nama = updatedPrediksi.map { it.nama },
                         nilaiAkhir = updatedPrediksi.map { it.nilaiAkhir / 25 },
-                        prediksiIP = averageNilaiAkhir
+                        prediksiIP = averageNilaiAkhir / 25
                     )
                 }
             }
