@@ -1,5 +1,6 @@
 package com.acadify.presentation.analisisakademik
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
@@ -17,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.TambahNilai
+import com.acadify.presentation.ui.theme.Blue40
 import com.acadify.presentation.ui.theme.PurpleBlue40
 
 @Composable
@@ -27,7 +30,7 @@ fun AnalisisAcademikCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp),
-        colors = CardDefaults.cardColors(PurpleBlue40),
+        colors = CardDefaults.cardColors(Blue40),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -46,10 +49,17 @@ fun AnalisisAcademikCard(
                 Spacer(modifier = Modifier.padding(4.dp))
                 Text(text = "SKS: ${mataKuliah.tambahNilai.jumlahSKS}", color = Color.White)
             }
-            Text(
-                text = "Nilai: ${mataKuliah.tambahNilai.nilai}",
-                color = getColorForValue(mataKuliah.tambahNilai.nilai)
-            )
+            Box(contentAlignment = Alignment.CenterEnd) {
+                Text(
+                    modifier = Modifier.padding(end = 1.dp),
+                    text = "Nilai: ${mataKuliah.tambahNilai.nilai}",
+                    color = Color.White
+                )
+                Text(
+                    text = "Nilai: ${mataKuliah.tambahNilai.nilai}",
+                    color = getColorForValue(mataKuliah.tambahNilai.nilai)
+                )
+            }
         }
     }
 }
