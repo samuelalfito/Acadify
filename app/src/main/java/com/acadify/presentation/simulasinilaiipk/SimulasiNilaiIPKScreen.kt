@@ -20,12 +20,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,7 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.acadify.model.data.MataKuliah
-import com.acadify.presentation.kelolanilai.KelolaNilaiCard
+import com.acadify.utils.Resource
 
 @Composable
 fun SimulasiNilaiIPKScreen(navController: NavController) {
@@ -42,7 +44,14 @@ fun SimulasiNilaiIPKScreen(navController: NavController) {
     var isDeleteNilaiScreenVisible = remember { mutableStateOf(false) }
     val selectedMataKuliah = remember { mutableStateOf<MataKuliah?>(null) }
     val viewModel: SimulasiNilaiIPKViewModel = viewModel()
-    val mataKuliahList = viewModel.mataKuliahList.collectAsState()
+    val mataKuliahList = viewModel.mataKuliahList.collectAsState(Resource.Loading())
+    val simulasiMataKuliah = viewModel.simulasiMataKuliah.collectAsState(emptyList())
+    val context = LocalContext.current
+    
+    
+    LaunchedEffect(Unit) {
+        viewModel.fetchKelolaNilai()
+    }
     
     Column(
         modifier = Modifier
@@ -93,32 +102,68 @@ fun SimulasiNilaiIPKScreen(navController: NavController) {
                 )
             }
         }
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(50.dp))
-            }
-            if (mataKuliahList.value.isEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
-                    ) {
-                        Text("Mata Kuliah masih Kosong")
-                    }
+        Text(
+            text = "IPK: ${viewModel.hitungIPK(mataKuliahList.value.data)}",
+            modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally),
+        )
+        when (val value = mataKuliahList.value) {
+            is Resource.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                ) {
+                    Text("Error")
                 }
-            } else {
-                items(mataKuliahList.value) { mataKuliah ->
-                    KelolaNilaiCard(mataKuliah = mataKuliah, onEditClick = {
-                        selectedMataKuliah.value = mataKuliah
-                        isEditNilaiScreenVisible.value = true
-                    }, onDeleteClick = {
-                        selectedMataKuliah.value = mataKuliah
-                        isDeleteNilaiScreenVisible.value = true
-                    })
+            }
+            is Resource.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                ) {
+                    Text("Loading...")
+                }
+            }
+            is Resource.Success -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.height(50.dp))
+                    }
+                    if (value.data.isNullOrEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                            ) {
+                                Text("Mata Kuliah masih Kosong")
+                            }
+                        }
+                    } else {
+                        items(value.data) { mataKuliah ->
+                            SimulasiNilaiIPKCard(mataKuliah = mataKuliah)
+                        }
+                    }
+                    if (simulasiMataKuliah.value.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                            ) {
+                                Text("Mata Kuliah masih Kosong")
+                            }
+                        }
+                    } else {
+                        items(simulasiMataKuliah.value) { mataKuliah ->
+                            SimulasiNilaiIPKCard(mataKuliah = mataKuliah, onEditClick = {
+                                selectedMataKuliah.value = mataKuliah
+                                isEditNilaiScreenVisible.value = true
+                            }, onDeleteClick = {
+                                selectedMataKuliah.value = mataKuliah
+                                isDeleteNilaiScreenVisible.value = true
+                            })
+                        }
+                    }
                 }
             }
         }
+        
     }
     if (isTambahNilaiScreenVisible.value) {
         Column(
