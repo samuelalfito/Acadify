@@ -9,14 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,9 +22,10 @@ import androidx.compose.ui.unit.dp
 import com.acadify.model.data.MataKuliah
 import com.acadify.R
 import com.acadify.model.data.TambahNilai
+import com.acadify.presentation.ui.theme.PurpleBlue40
 
 @Composable
-fun KelolaNilai(
+fun KelolaNilaiCard(
     mataKuliah: MataKuliah,
     onEditClick: (MataKuliah) -> Unit,
     onDeleteClick: (MataKuliah) -> Unit,
@@ -37,7 +34,7 @@ fun KelolaNilai(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp),
-        colors = CardDefaults.cardColors(Color(0xFFed7038)),
+        colors = CardDefaults.cardColors(PurpleBlue40),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -86,7 +83,7 @@ fun KelolaNilai(
 @Preview
 @Composable
 fun KelolaNilaiPreview(modifier: Modifier = Modifier) {
-    KelolaNilai(mataKuliah = MataKuliah(TambahNilai("Matematika", 90f, 3f)),
+    KelolaNilaiCard(mataKuliah = MataKuliah(TambahNilai("Matematika", 90f, 3f)),
         onEditClick = {},
         onDeleteClick = {})
 }
