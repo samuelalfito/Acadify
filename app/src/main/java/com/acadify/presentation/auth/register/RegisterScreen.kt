@@ -73,12 +73,12 @@ fun RegisterScreen(navController: NavController) {
                         .align(Alignment.CenterVertically)
                         .padding(horizontal = 10.dp)
                 )
-                Divider(
+                VerticalDivider(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .width(1.dp)
                         .padding(vertical = 10.dp),
-                    color = Color.Gray
+                    color = Color.Gray,
+                    thickness = 2.dp
                 )
                 TextField(
                     value = email.value,
