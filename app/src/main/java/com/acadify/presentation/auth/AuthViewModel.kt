@@ -55,4 +55,22 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
+    
+    fun logout() {
+        viewModelScope.launch {
+            flow {
+                emit(Resource.Loading(Unit))
+                try {
+                    val response = repository.logout()
+                    if (response.isSuccess) {
+                        emit(Resource.Success(Unit))
+                    } else {
+                        emit(Resource.Error(response.exceptionOrNull()?.message ?: "Unknown error"))
+                    }
+                } catch (e: Exception) {
+                    emit(Resource.Error(e.message ?: "Unknown error"))
+                }
+            }
+        }
+    }
 }
