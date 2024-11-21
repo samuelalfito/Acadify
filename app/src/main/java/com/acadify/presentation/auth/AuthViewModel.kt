@@ -13,6 +13,8 @@ class AuthViewModel : ViewModel() {
     val repository = FireAuth()
     private val _loginState = MutableSharedFlow<Resource<Unit>>()
     val loginState = _loginState.asSharedFlow()
+    private val _registerState = MutableSharedFlow<Resource<Unit>>()
+    val registerState = _registerState.asSharedFlow()
     
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -49,7 +51,7 @@ class AuthViewModel : ViewModel() {
                     emit(Resource.Error(e.message ?: "Unknown error"))
                 }
             }.collect {
-                _loginState.emit(it)
+                _registerState.emit(it)
             }
         }
     }
