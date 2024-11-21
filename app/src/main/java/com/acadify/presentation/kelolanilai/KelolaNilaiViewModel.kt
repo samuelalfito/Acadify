@@ -9,6 +9,8 @@ import com.acadify.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -16,28 +18,9 @@ import kotlinx.coroutines.tasks.await
 
 class KelolaNilaiViewModel : ViewModel() {
     private val repository = FireFirestore()
+    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
     private val _mataKuliahList = Channel<Resource<List<MataKuliah>>>()
     val mataKuliahList = _mataKuliahList.receiveAsFlow()
-    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-    
-//    fun addMataKuliah(mataKuliah: MataKuliah) {
-//        _mataKuliahList.value = _mataKuliahList.value + mataKuliah
-//    }
-    
-//    fun updateMataKuliah(oldValue: MataKuliah , newValue: MataKuliah) {
-//        _mataKuliahList.value = _mataKuliahList.value.map {
-//            if (it.tambahNilai.nama == oldValue.tambahNilai.nama) {
-//                newValue
-//            } else {
-//                it
-//            }
-//        }
-//        Log.d("KelolaNilaiViewModel", "updateMataKuliah: $mataKuliahList")
-//    }
-    
-//    fun deleteMataKuliah(mataKuliah: MataKuliah) {
-//        _mataKuliahList.value = _mataKuliahList.value.filter { it.tambahNilai.nama != mataKuliah.tambahNilai.nama }
-//    }
     
     fun fetchKelolaNilai() {
         viewModelScope.launch {
@@ -56,6 +39,7 @@ class KelolaNilaiViewModel : ViewModel() {
             if (result is Resource.Error) {
                 Log.e("KelolaNilaiViewModel", "updateMataKuliah: ${result.msg}")
             }
+            fetchKelolaNilai()
         }
     }
     
@@ -66,6 +50,7 @@ class KelolaNilaiViewModel : ViewModel() {
                 if (result is Resource.Error) {
                     Log.e("KelolaNilaiViewModel", "addMataKuliah: ${result.msg}")
                 }
+                fetchKelolaNilai()
             }
         }
     }
@@ -76,6 +61,7 @@ class KelolaNilaiViewModel : ViewModel() {
             if (result is Resource.Error) {
                 Log.e("KelolaNilaiViewModel", "deleteMataKuliah: ${result.msg}")
             }
+            fetchKelolaNilai()
         }
     }
 }
