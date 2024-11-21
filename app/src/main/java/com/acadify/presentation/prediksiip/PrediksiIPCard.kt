@@ -71,8 +71,8 @@ fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
         ) {
             Column(modifier = Modifier.padding(4.dp)) {
                 Text("Prediksi")
-                Text("IP ${prediksiIP.nilaiAkhir.firstOrNull() ?: 0f}")
                 Text(String.format(Locale.getDefault(), "%.2f", prediksiIP.prediksiIP))
+                Text(String.format(Locale.getDefault(), "%.2f", prediksiIP.nilaiAkhir.firstOrNull() ?: 0f))
             }
         }
     }
