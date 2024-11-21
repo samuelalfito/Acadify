@@ -108,8 +108,7 @@ fun LoginScreen(navController: NavController) {
                     thickness = 2.dp,
                     color = Green40
                 )
-                TextField(
-                    value = email.value,
+                TextField(value = email.value,
                     onValueChange = { newValue -> email.value = newValue },
                     placeholder = { Text("Email") },
                     colors = TextFieldDefaults.colors(
@@ -183,7 +182,11 @@ fun LoginScreen(navController: NavController) {
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Green40),
                 onClick = {
-                    if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                    if (email.value.isEmpty() || password.value.isEmpty()) {
+                        Toast.makeText(
+                            context, "Mohon isi semua field yang ada", Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
                         viewModel.login(email.value, password.value)
                     }
                 }) {
@@ -211,8 +214,24 @@ fun LoginScreen(navController: NavController) {
         }
         when (loginState.value) {
             is Resource.Error -> {
-                Toast.makeText(context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT)
-                    .show()
+                if (loginState.value.msg != null) {
+                    if (loginState.value.msg!!.contains(
+                            "wrong password", ignoreCase = true
+                        ) || loginState.value.msg!!.contains("no user record", ignoreCase = true)
+                    ) {
+                        Toast.makeText(
+                            context,
+                            "Login gagal, Email atau password tidak sesuai",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+//                        Toast.makeText(context, loginState.value.msg, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             
             is Resource.Loading -> {
@@ -222,7 +241,11 @@ fun LoginScreen(navController: NavController) {
             }
             
             is Resource.Success -> {
-                navController.navigate("kelola_nilai")
+                navController.navigate("kelola_nilai") {
+                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
         }
     }
