@@ -188,25 +188,7 @@ fun KelolaNilaiScreen(navController: NavController) {
 //                horizontalAlignment = Alignment.CenterHorizontally
 //            ) {
 //            }
-                AlertDialog(onDismissRequest = { isDeleteNilaiScreenVisible.value = false },
-                    title = { Text("Delete Nilai") },
-                    text = {
-                        Text("Apakah Anda yakin menghapus nilai ?")
-                    },
-                    confirmButton = {
-                        Button(onClick = {
-                            // Handle delete action
-                            isDeleteNilaiScreenVisible.value = false
-                            viewModel.deleteMataKuliah(index.toString())
-                        }) {
-                            Text("Delete")
-                        }
-                    },
-                    dismissButton = {
-                        Button(onClick = { isDeleteNilaiScreenVisible.value = false }) {
-                            Text("Cancel")
-                        }
-                    })
+                DeleteNilaiScreen(viewModel, selectedMataKuliah.value!!, isDeleteNilaiScreenVisible)
         }
     }
 }
