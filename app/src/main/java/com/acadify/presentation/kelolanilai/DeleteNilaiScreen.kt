@@ -39,11 +39,12 @@ fun DeleteNilaiScreen(
         title = { Text("Delete Nilai") },
         text = { Text("Apakah anda yakin menghapus nilai?") },
         confirmButton = {
-            Button(onClick = {
-                viewModel.deleteMataKuliah(mataKuliah.id)
-                isDeleteNilaiScreenVisible.value = false
-            }) {
-                Text("Hapus")
+            Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                onClick = {
+                    viewModel.deleteMataKuliah(mataKuliah.id)
+                    isDeleteNilaiScreenVisible.value = false
+                }) {
+                Text("Hapus", color = Color.White)
             }
         },
         dismissButton = {

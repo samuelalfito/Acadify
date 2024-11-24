@@ -1,10 +1,12 @@
 package com.acadify.presentation.simulasinilaiipk
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +14,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,11 +38,13 @@ fun TambahSimulasiNilaiScreen(
             title = { Text("Peringatan") },
             text = { Text("Apakah anda yakin untuk meninggalkan halaman?") },
             confirmButton = {
-                Button(onClick = {
-                    showWarningDialog.value = false
-                    isTambahNilaiScreenVisible.value = false
-                }) {
-                    Text("Iya")
+                Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    border = BorderStroke(1.dp, Color.Cyan),
+                    onClick = {
+                        showWarningDialog.value = false
+                        isTambahNilaiScreenVisible.value = false
+                    }) {
+                    Text("Iya", color = Color.Cyan)
                 }
             },
             dismissButton = {
@@ -114,8 +119,10 @@ fun TambahSimulasiNilaiScreen(
             Text("Tambah")
         }
     }, dismissButton = {
-        Button(onClick = { isTambahNilaiScreenVisible.value = false }) {
-            Text("Batal")
+        Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            border = BorderStroke(1.dp, Color.Cyan),
+            onClick = { isTambahNilaiScreenVisible.value = false }) {
+            Text("Batal", color = Color.Cyan)
         }
     })
 }

@@ -60,7 +60,7 @@ fun AnalisisAcademikCard(
                     Text(
                         modifier = Modifier.padding(5.dp),
                         text = "Nilai: ${mataKuliah.tambahNilai.nilai}",
-                        color = Color.White
+                        color = Color.Black
                     )
                 }
             }
@@ -72,7 +72,7 @@ fun getColorForValue(value: Float): Color {
     return when {
         value >= 4f -> Color(0xFF007D00)
         value >= 3f -> Color(0xFF50BF50)
-        value >= 2f -> Color(0xFFFFFF00)
+        value >= 2f -> Color(0xFFD2D20F)
         value >= 1f -> Color(0xFFFFA500)
         else -> Color(0xFFEA0000)
     }
