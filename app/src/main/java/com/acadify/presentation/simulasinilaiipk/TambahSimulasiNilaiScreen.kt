@@ -53,14 +53,16 @@ fun TambahSimulasiNilaiScreen(
         showWarningDialog.value = true
     }, title = { Text("Tambah Nilai") }, text = {
         Column(modifier = Modifier.padding(8.dp)) {
-            OutlinedTextField(value = nama.value,
+            OutlinedTextField(
+                value = nama.value,
                 onValueChange = { newValue -> nama.value = newValue },
                 placeholder = { Text("Nama") },
                 modifier = Modifier.padding(bottom = 10.dp),
                 maxLines = 1,
                 singleLine = true
             )
-            OutlinedTextField(value = nilai.value,
+            OutlinedTextField(
+                value = nilai.value,
                 onValueChange = { newValue -> nilai.value = newValue },
                 placeholder = { Text("Nilai") },
                 modifier = Modifier.padding(bottom = 10.dp),
@@ -98,6 +100,7 @@ fun TambahSimulasiNilaiScreen(
             }
             viewModel.addMataKuliah(
                 MataKuliah(
+                    "",
                     TambahNilai(
                         nama = nama.value,
                         nilai = nilai.value.toFloat(),

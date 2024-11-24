@@ -87,10 +87,15 @@ fun EditSimulasiNilaiScreen(
             if (nama.value.isEmpty() || nilai.value.isEmpty() || jumlahSKS.value.isEmpty()) {
                 return@Button
             }
-            
+            if (nilai.value.toFloat() !in 0.0..4.0) {
+                Toast.makeText(
+                    context, "Nilai dalam skala 4", Toast.LENGTH_SHORT
+                ).show()
+                return@Button
+            }
             viewModel.updateMataKuliah(
                 oldValue = mataKuliah, newValue = MataKuliah(
-                    TambahNilai(
+                    mataKuliah.id, TambahNilai(
                         nama = nama.value,
                         nilai = nilai.value.toFloat(),
                         jumlahSKS = jumlahSKS.value.toFloat()
@@ -121,10 +126,10 @@ fun EditSimulasiNilaiScreenPreview() {
                 nilaiKuis = 100.0f,
                 nilaiUTS = 100.0f,
                 nilaiUAS = 100.0f,
-                persentaseTugas = 25.0f,
-                persentaseKuis = 25.0f,
-                persentaseUTS = 25.0f,
-                persentaseUAS = 25.0f
+                persentaseTugas = 25,
+                persentaseKuis = 25,
+                persentaseUTS = 25,
+                persentaseUAS = 25
             )
         ), isEditNilaiScreenVisible = mutableStateOf(true)
     )

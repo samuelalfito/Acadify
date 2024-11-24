@@ -111,7 +111,9 @@ fun TambahNilaiScreen(
                                 nilaiTugas.value = newValue
                             },
                             placeholder = { Text("Nilai Tugas") },
-                            modifier = Modifier.padding(bottom = 10.dp).weight(1f),
+                            modifier = Modifier
+                                .padding(bottom = 10.dp)
+                                .weight(1f),
                             maxLines = 1,
                             singleLine = true
                         )
@@ -124,7 +126,9 @@ fun TambahNilaiScreen(
                                     persentaseTugas.value = ""
                                 }
                             },
-                            modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
+                            modifier = Modifier
+                                .padding(start = 10.dp, bottom = 10.dp)
+                                .width(90.dp),
                             maxLines = 1,
                             singleLine = true,
                             trailingIcon = {
@@ -138,7 +142,9 @@ fun TambahNilaiScreen(
                                 nilaiKuis.value = newValue
                             },
                             placeholder = { Text("Nilai Kuis") },
-                            modifier = Modifier.padding(bottom = 10.dp).weight(1f),
+                            modifier = Modifier
+                                .padding(bottom = 10.dp)
+                                .weight(1f),
                             maxLines = 1,
                             singleLine = true
                         )
@@ -151,7 +157,9 @@ fun TambahNilaiScreen(
                                     persentaseTugas.value = ""
                                 }
                             },
-                            modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
+                            modifier = Modifier
+                                .padding(start = 10.dp, bottom = 10.dp)
+                                .width(90.dp),
                             maxLines = 1,
                             singleLine = true,
                             trailingIcon = {
@@ -165,7 +173,9 @@ fun TambahNilaiScreen(
                                 nilaiUTS.value = newValue
                             },
                             placeholder = { Text("Nilai UTS") },
-                            modifier = Modifier.padding(bottom = 10.dp).weight(1f),
+                            modifier = Modifier
+                                .padding(bottom = 10.dp)
+                                .weight(1f),
                             maxLines = 1,
                             singleLine = true
                         )
@@ -178,7 +188,9 @@ fun TambahNilaiScreen(
                                     persentaseTugas.value = ""
                                 }
                             },
-                            modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
+                            modifier = Modifier
+                                .padding(start = 10.dp, bottom = 10.dp)
+                                .width(90.dp),
                             maxLines = 1,
                             singleLine = true,
                             trailingIcon = {
@@ -192,7 +204,9 @@ fun TambahNilaiScreen(
                                 nilaiUAS.value = newValue
                             },
                             placeholder = { Text("Nilai UAS") },
-                            modifier = Modifier.padding(bottom = 10.dp).weight(1f),
+                            modifier = Modifier
+                                .padding(bottom = 10.dp)
+                                .weight(1f),
                             maxLines = 1,
                             singleLine = true
                         )
@@ -205,7 +219,9 @@ fun TambahNilaiScreen(
                                     persentaseTugas.value = ""
                                 }
                             },
-                            modifier = Modifier.padding(bottom = 10.dp).width(90.dp),
+                            modifier = Modifier
+                                .padding(start = 10.dp, bottom = 10.dp)
+                                .width(90.dp),
                             maxLines = 1,
                             singleLine = true,
                             trailingIcon = {
@@ -235,8 +251,38 @@ fun TambahNilaiScreen(
                     ).show()
                     return@Button
                 }
+                if (tambahKomponen.value) {
+                    if (nilaiTugas.value.isEmpty() || nilaiTugas.value.toFloatOrNull() == null || nilaiKuis.value.isEmpty() || nilaiKuis.value.toFloatOrNull() == null || nilaiUTS.value.isEmpty() || nilaiUTS.value.toFloatOrNull() == null || nilaiUAS.value.isEmpty() || nilaiUAS.value.toFloatOrNull() == null) {
+                        Toast.makeText(
+                            context, "Mohon isi semua field dengan benar", Toast.LENGTH_SHORT
+                        ).show()
+                        return@Button
+                    }
+                    if (nilaiTugas.value.isEmpty()) nilaiTugas.value = "0"
+                    if (nilaiKuis.value.isEmpty()) nilaiKuis.value = "0"
+                    if (nilaiUTS.value.isEmpty()) nilaiUTS.value = "0"
+                    if (nilaiUAS.value.isEmpty()) nilaiUAS.value = "0"
+                    
+                    val percentages = listOf(
+                        persentaseTugas to persentaseTugas.value.toFloatOrNull(),
+                        persentaseKuis to persentaseKuis.value.toFloatOrNull(),
+                        persentaseUTS to persentaseUTS.value.toFloatOrNull(),
+                        persentaseUAS to persentaseUAS.value.toFloatOrNull()
+                    )
+                    
+                    val filledPercentages = percentages.filter { it.second != null }.map { it.second!! }
+                    val totalFilledPercentage = filledPercentages.sum()
+                    val remainingPercentage = 100f - totalFilledPercentage
+                    val emptyFields = percentages.filter { it.second == null }
+                    
+                    if (emptyFields.isNotEmpty()) {
+                        val distributedPercentage = remainingPercentage / emptyFields.size
+                        emptyFields.forEach { it.first.value = distributedPercentage.toString() }
+                    }
+                }
                 viewModel.addMataKuliah(
                     MataKuliah(
+                        id = "",
                         TambahNilai(
                             nama = nama.value,
                             nilai = nilai.value.toFloat(),
@@ -248,10 +294,10 @@ fun TambahNilaiScreen(
                                 nilaiKuis = nilaiKuis.value.toFloat(),
                                 nilaiUTS = nilaiUTS.value.toFloat(),
                                 nilaiUAS = nilaiUAS.value.toFloat(),
-                                persentaseTugas = persentaseTugas.value.toFloat(),
-                                persentaseKuis = persentaseKuis.value.toFloat(),
-                                persentaseUTS = persentaseUTS.value.toFloat(),
-                                persentaseUAS = persentaseUAS.value.toFloat()
+                                persentaseTugas = persentaseTugas.value.toInt(),
+                                persentaseKuis = persentaseKuis.value.toInt(),
+                                persentaseUTS = persentaseUTS.value.toInt(),
+                                persentaseUAS = persentaseUAS.value.toInt()
                             )
                         } else {
                             null

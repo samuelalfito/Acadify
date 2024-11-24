@@ -130,7 +130,6 @@ fun KelolaNilaiScreen(navController: NavController, navBarViewModel: NavBarViewM
             EditNilaiScreen(
                 viewModel,
                 selectedMataKuliah.value!!,
-                index = index.toString(),
                 isEditNilaiScreenVisible
             )
         }

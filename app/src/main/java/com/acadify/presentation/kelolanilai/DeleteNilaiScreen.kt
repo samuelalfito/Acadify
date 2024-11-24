@@ -40,7 +40,7 @@ fun DeleteNilaiScreen(
         text = { Text("Apakah anda yakin menghapus nilai?") },
         confirmButton = {
             Button(onClick = {
-                viewModel.deleteMataKuliah("1")
+                viewModel.deleteMataKuliah(mataKuliah.id)
                 isDeleteNilaiScreenVisible.value = false
             }) {
                 Text("Hapus")
@@ -58,6 +58,6 @@ fun DeleteNilaiScreen(
 @Composable
 fun PreviewDeleteNilaiScreen() {
     DeleteNilaiScreen(
-        KelolaNilaiViewModel(), MataKuliah(TambahNilai("a", 1.0f, 1.0f)), mutableStateOf(true)
+        KelolaNilaiViewModel(), MataKuliah("", TambahNilai("a", 1.0f, 1.0f)), mutableStateOf(true)
     )
 }

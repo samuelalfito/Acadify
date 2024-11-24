@@ -103,8 +103,8 @@ fun KelolaNilaiCard(
 
 @Preview
 @Composable
-fun KelolaNilaiPreview(modifier: Modifier = Modifier) {
-    KelolaNilaiCard(mataKuliah = MataKuliah(TambahNilai("Matematika", 90f, 3f)),
+fun KelolaNilaiPreview() {
+    KelolaNilaiCard(mataKuliah = MataKuliah("", TambahNilai("Matematika", 90f, 3f)),
         onEditClick = {},
         onDeleteClick = {})
 }

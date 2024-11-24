@@ -10,18 +10,9 @@ class FireFirestore() {
     
     suspend fun addMataKuliah(userId: String, mataKuliah: MataKuliah): Resource<Void> {
         return try {
-            val counterDoc = firestore.collection("KelolaNilai").document(userId)
-            val counterSnapshot = counterDoc.get().await()
-            val counter = if (counterSnapshot.exists()) {
-                counterSnapshot.getLong("counter") ?: 0
-            } else {
-                0
-            }
-            val newCounter = counter + 1
-            counterDoc.set(mapOf("counter" to newCounter)).await()
-            
-            val documentId = "$newCounter"
-            firestore.collection("KelolaNilai").document(userId).collection("MataKuliah").document(documentId).set(mataKuliah).await()
+            val documentRef = firestore.collection("KelolaNilai").document(userId).collection("MataKuliah").document()
+            mataKuliah.id = documentRef.id
+            documentRef.set(mataKuliah).await()
             Resource.Success(null)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "An error occurred")
@@ -38,9 +29,9 @@ class FireFirestore() {
         }
     }
     
-    suspend fun updateMataKuliah(userId: String, documentId: String, newValue: MataKuliah): Resource<Void> {
+    suspend fun updateMataKuliah(userId: String, mataKuliah: MataKuliah): Resource<Void> {
         return try {
-            firestore.collection("KelolaNilai").document(userId).collection("MataKuliah").document(documentId).set(newValue).await()
+            firestore.collection("KelolaNilai").document(userId).collection("MataKuliah").document(mataKuliah.id).set(mataKuliah).await()
             Resource.Success(null)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "An error occurred")
@@ -49,16 +40,6 @@ class FireFirestore() {
     
     suspend fun deleteMataKuliah(userId: String, documentId: String): Resource<Void> {
         return try {
-            val counterDoc = firestore.collection("KelolaNilai").document(userId)
-            val counterSnapshot = counterDoc.get().await()
-            val counter = if (counterSnapshot.exists()) {
-                counterSnapshot.getLong("counter") ?: 0
-            } else {
-                0
-            }
-            val newCounter = counter - 1
-            counterDoc.set(mapOf("counter" to newCounter)).await()
-            
             firestore.collection("KelolaNilai").document(userId).collection("MataKuliah").document(documentId).delete().await()
             Resource.Success(null)
         } catch (e: Exception) {

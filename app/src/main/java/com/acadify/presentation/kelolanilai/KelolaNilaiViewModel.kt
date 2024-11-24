@@ -33,9 +33,9 @@ class KelolaNilaiViewModel : ViewModel() {
         }
     }
     
-    fun updateMataKuliah(documentId: String, newValue: MataKuliah) {
+    fun updateMataKuliah(mataKuliah: MataKuliah) {
         viewModelScope.launch {
-            val result = repository.updateMataKuliah(userId, documentId = documentId, newValue)
+            val result = repository.updateMataKuliah(userId, mataKuliah)
             if (result is Resource.Error) {
                 Log.e("KelolaNilaiViewModel", "updateMataKuliah: ${result.msg}")
             }

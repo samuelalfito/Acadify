@@ -47,6 +47,8 @@ fun DeleteSimulasiNilaiScreen(
 @Composable
 fun PreviewDeleteSimulasiNilaiScreen() {
     DeleteSimulasiNilaiScreen(
-        SimulasiNilaiIPKViewModel(), MataKuliah(TambahNilai("a", 1.0f, 1.0f)), mutableStateOf(true)
+        SimulasiNilaiIPKViewModel(),
+        MataKuliah("", TambahNilai("a", 1.0f, 1.0f)),
+        mutableStateOf(true)
     )
 }

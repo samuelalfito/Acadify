@@ -5,14 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,41 +16,43 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.acadify.R
 import com.acadify.model.data.KomponenNilai
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.TambahNilai
+import kotlin.toString
 
 @Composable
 fun EditNilaiScreen(
     viewModel: KelolaNilaiViewModel,
     mataKuliah: MataKuliah,
-    index: String,
     isEditNilaiScreenVisible: MutableState<Boolean>,
 ) {
-    var nama = remember { mutableStateOf(mataKuliah.tambahNilai.nama) }
-    var nilai = remember { mutableStateOf(mataKuliah.tambahNilai.nilai.toString()) }
-    var jumlahSKS = remember { mutableStateOf(mataKuliah.tambahNilai.jumlahSKS.toString()) }
-    var tambahKomponen = remember { mutableStateOf(mataKuliah.komponenNilai != null) }
-    var nilaiTugas = remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiTugas.toString()) }
-    var nilaiKuis = remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiKuis.toString()) }
-    var nilaiUTS = remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiUTS.toString()) }
-    var nilaiUAS = remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiUAS.toString()) }
-    var persentaseTugas =
-        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseTugas.toString()) }
-    var persentaseKuis =
-        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseKuis.toString()) }
-    var persentaseUTS =
-        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseUTS.toString()) }
-    var persentaseUAS =
-        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseUAS.toString()) }
     val context = LocalContext.current
     val showWarningDialog = remember { mutableStateOf(false) }
+    
+    val nama = remember { mutableStateOf(mataKuliah.tambahNilai.nama) }
+    val nilai = remember { mutableStateOf(mataKuliah.tambahNilai.nilai.toString()) }
+    val jumlahSKS = remember { mutableStateOf(mataKuliah.tambahNilai.jumlahSKS.toString()) }
+    val tambahKomponen = remember { mutableStateOf(mataKuliah.komponenNilai != null) }
+    val nilaiTugas =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiTugas?.toString() ?: "0") }
+    val nilaiKuis =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiKuis?.toString() ?: "0") }
+    val nilaiUTS =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiUTS?.toString() ?: "0") }
+    val nilaiUAS =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.nilaiUAS?.toString() ?: "0") }
+    val persentaseTugas =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseTugas?.toString() ?: "25") }
+    val persentaseKuis =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseKuis?.toString() ?: "25") }
+    val persentaseUTS =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseUTS?.toString() ?: "25") }
+    val persentaseUAS =
+        remember { mutableStateOf(mataKuliah.komponenNilai?.persentaseUAS?.toString() ?: "25") }
     
     if (showWarningDialog.value) {
         AlertDialog(onDismissRequest = { showWarningDialog.value = false },
@@ -80,21 +77,24 @@ fun EditNilaiScreen(
         showWarningDialog.value = true
     }, title = { Text("Edit Nilai") }, text = {
         Column(modifier = Modifier.padding(8.dp)) {
-            OutlinedTextField(value = nama.value,
+            OutlinedTextField(
+                value = nama.value,
                 onValueChange = { newValue -> nama.value = newValue },
                 placeholder = { Text("Nama") },
                 modifier = Modifier.padding(bottom = 10.dp),
                 maxLines = 1,
                 singleLine = true
             )
-            OutlinedTextField(value = nilai.value,
+            OutlinedTextField(
+                value = nilai.value,
                 onValueChange = { newValue -> nilai.value = newValue },
                 placeholder = { Text("Nilai") },
                 modifier = Modifier.padding(bottom = 10.dp),
                 maxLines = 1,
                 singleLine = true
             )
-            OutlinedTextField(value = jumlahSKS.value,
+            OutlinedTextField(
+                value = jumlahSKS.value,
                 onValueChange = { newValue -> jumlahSKS.value = newValue },
                 placeholder = { Text("jumlahSKS") },
                 modifier = Modifier.padding(bottom = 10.dp),
@@ -110,7 +110,8 @@ fun EditNilaiScreen(
             }
             if (tambahKomponen.value) {
                 Row {
-                    OutlinedTextField(value = nilaiTugas.value,
+                    OutlinedTextField(
+                        value = nilaiTugas.value,
                         onValueChange = { newValue: String ->
                             nilaiTugas.value = newValue
                         },
@@ -131,7 +132,7 @@ fun EditNilaiScreen(
                             }
                         },
                         modifier = Modifier
-                            .padding(bottom = 10.dp)
+                            .padding(start = 10.dp, bottom = 10.dp)
                             .width(90.dp),
                         maxLines = 1,
                         singleLine = true,
@@ -140,7 +141,8 @@ fun EditNilaiScreen(
                         })
                 }
                 Row {
-                    OutlinedTextField(value = nilaiKuis.value,
+                    OutlinedTextField(
+                        value = nilaiKuis.value,
                         onValueChange = { newValue: String ->
                             nilaiKuis.value = newValue
                         },
@@ -161,7 +163,7 @@ fun EditNilaiScreen(
                             }
                         },
                         modifier = Modifier
-                            .padding(bottom = 10.dp)
+                            .padding(start = 10.dp, bottom = 10.dp)
                             .width(90.dp),
                         maxLines = 1,
                         singleLine = true,
@@ -170,7 +172,8 @@ fun EditNilaiScreen(
                         })
                 }
                 Row {
-                    OutlinedTextField(value = nilaiUTS.value,
+                    OutlinedTextField(
+                        value = nilaiUTS.value,
                         onValueChange = { newValue: String ->
                             nilaiUTS.value = newValue
                         },
@@ -191,7 +194,7 @@ fun EditNilaiScreen(
                             }
                         },
                         modifier = Modifier
-                            .padding(bottom = 10.dp)
+                            .padding(start = 10.dp, bottom = 10.dp)
                             .width(90.dp),
                         maxLines = 1,
                         singleLine = true,
@@ -200,7 +203,8 @@ fun EditNilaiScreen(
                         })
                 }
                 Row {
-                    OutlinedTextField(value = nilaiUAS.value,
+                    OutlinedTextField(
+                        value = nilaiUAS.value,
                         onValueChange = { newValue: String ->
                             nilaiUAS.value = newValue
                         },
@@ -213,15 +217,15 @@ fun EditNilaiScreen(
                     )
                     OutlinedTextField(value = persentaseUAS.value,
                         onValueChange = { newValue: String ->
-                            val intValue = newValue.toIntOrNull() ?: ""
-                            if (intValue in 0..100) {
+                            val intValue = newValue.toIntOrNull()
+                            if (intValue != null && intValue in 0..100) {
                                 persentaseUAS.value = intValue.toString()
                             } else if (newValue.isEmpty()) {
-                                persentaseTugas.value = ""
+                                persentaseUAS.value = ""
                             }
                         },
                         modifier = Modifier
-                            .padding(bottom = 10.dp)
+                            .padding(start = 10.dp, bottom = 10.dp)
                             .width(90.dp),
                         maxLines = 1,
                         singleLine = true,
@@ -240,30 +244,64 @@ fun EditNilaiScreen(
                 return@Button
             }
             if (nama.value.isEmpty() || nilai.value.isEmpty() || jumlahSKS.value.isEmpty()) {
-                return@Button
-            }
-            if (tambahKomponen.value && (nilaiTugas.value.toFloatOrNull() == null || nilaiKuis.value.isEmpty() || nilaiUTS.value.isEmpty() || nilaiUAS.value.isEmpty() || persentaseTugas.value.isEmpty() || persentaseKuis.value.isEmpty() || persentaseUTS.value.isEmpty() || persentaseUAS.value.isEmpty())) {
                 Toast.makeText(
-                    context, "Mohon isi semua field dengan benar", Toast.LENGTH_SHORT
+                    context, "Mohon isi semua field yang ada", Toast.LENGTH_SHORT
                 ).show()
                 return@Button
             }
+            if (nilai.value.toFloat() !in 0.0..4.0) {
+                Toast.makeText(
+                    context, "Nilai dalam skala 4", Toast.LENGTH_SHORT
+                ).show()
+                return@Button
+            }
+            if (tambahKomponen.value) {
+                if (nilaiTugas.value.isEmpty() || nilaiTugas.value.toFloatOrNull() == null || nilaiKuis.value.isEmpty() || nilaiKuis.value.toFloatOrNull() == null || nilaiUTS.value.isEmpty() || nilaiUTS.value.toFloatOrNull() == null || nilaiUAS.value.isEmpty() || nilaiUAS.value.toFloatOrNull() == null) {
+                    Toast.makeText(
+                        context, "Mohon isi semua field dengan benar", Toast.LENGTH_SHORT
+                    ).show()
+                    return@Button
+                }
+                if (nilaiTugas.value.isEmpty()) nilaiTugas.value = "0"
+                if (nilaiKuis.value.isEmpty()) nilaiKuis.value = "0"
+                if (nilaiUTS.value.isEmpty()) nilaiUTS.value = "0"
+                if (nilaiUAS.value.isEmpty()) nilaiUAS.value = "0"
+                
+                val percentages = listOf(
+                    persentaseTugas to persentaseTugas.value.toFloatOrNull(),
+                    persentaseKuis to persentaseKuis.value.toFloatOrNull(),
+                    persentaseUTS to persentaseUTS.value.toFloatOrNull(),
+                    persentaseUAS to persentaseUAS.value.toFloatOrNull()
+                )
+                
+                val filledPercentages = percentages.filter { it.second != null }.map { it.second!! }
+                val totalFilledPercentage = filledPercentages.sum()
+                val remainingPercentage = 100f - totalFilledPercentage
+                val emptyFields = percentages.filter { it.second == null }
+                
+                if (emptyFields.isNotEmpty()) {
+                    val distributedPercentage = remainingPercentage / emptyFields.size
+                    emptyFields.forEach { it.first.value = distributedPercentage.toString() }
+                }
+            }
             viewModel.updateMataKuliah(
-                documentId = index, MataKuliah(
-                    TambahNilai(
+                MataKuliah(
+                    id = mataKuliah.id,
+                    tambahNilai = TambahNilai(
                         nama = nama.value,
                         nilai = nilai.value.toFloat(),
                         jumlahSKS = jumlahSKS.value.toFloat()
-                    ), if (tambahKomponen.value) {
+                    ),
+                    komponenNilai = if (tambahKomponen.value) {
                         KomponenNilai(
                             nilaiTugas = nilaiTugas.value.toFloat(),
                             nilaiKuis = nilaiKuis.value.toFloat(),
                             nilaiUTS = nilaiUTS.value.toFloat(),
                             nilaiUAS = nilaiUAS.value.toFloat(),
-                            persentaseTugas = persentaseTugas.value.toFloat(),
-                            persentaseKuis = persentaseKuis.value.toFloat(),
-                            persentaseUTS = persentaseUTS.value.toFloat(),
-                            persentaseUAS = persentaseUAS.value.toFloat()
+                            persentaseTugas = persentaseTugas.value.toInt(),
+                            persentaseKuis = persentaseKuis.value.toInt(),
+                            persentaseUTS = persentaseUTS.value.toInt(),
+                            persentaseUAS = persentaseUAS.value.toInt()
                         )
                     } else {
                         null
@@ -287,6 +325,7 @@ fun EditNilaiScreen(
 fun EditNilaiScreenPreview() {
     EditNilaiScreen(
         viewModel = KelolaNilaiViewModel(), mataKuliah = MataKuliah(
+            id = "",
             tambahNilai = TambahNilai(
                 nama = "Pemrograman Berorientasi Objek", nilai = 4.0f, jumlahSKS = 3.0f
             ), komponenNilai = KomponenNilai(
@@ -294,11 +333,11 @@ fun EditNilaiScreenPreview() {
                 nilaiKuis = 100.0f,
                 nilaiUTS = 100.0f,
                 nilaiUAS = 100.0f,
-                persentaseTugas = 25.0f,
-                persentaseKuis = 25.0f,
-                persentaseUTS = 25.0f,
-                persentaseUAS = 25.0f
+                persentaseTugas = 25,
+                persentaseKuis = 25,
+                persentaseUTS = 25,
+                persentaseUAS = 25
             )
-        ), index = "0", isEditNilaiScreenVisible = mutableStateOf(true)
+        ), isEditNilaiScreenVisible = mutableStateOf(true)
     )
 }

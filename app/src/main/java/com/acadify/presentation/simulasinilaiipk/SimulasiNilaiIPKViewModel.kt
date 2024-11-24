@@ -43,7 +43,7 @@ class SimulasiNilaiIPKViewModel : ViewModel() {
     
     fun updateMataKuliah(oldValue: MataKuliah , newValue: MataKuliah) {
         _simulasiMataKuliah.value = _simulasiMataKuliah.value.map {
-            if (it.tambahNilai.nama == oldValue.tambahNilai.nama) {
+            if (it.id == oldValue.id) {
                 newValue
             } else {
                 it
@@ -53,7 +53,7 @@ class SimulasiNilaiIPKViewModel : ViewModel() {
     }
     
     fun deleteMataKuliah(mataKuliah: MataKuliah) {
-        _simulasiMataKuliah.value = _simulasiMataKuliah.value.filter { it.tambahNilai.nama != mataKuliah.tambahNilai.nama }
+        _simulasiMataKuliah.value = _simulasiMataKuliah.value.filter { it.id != mataKuliah.id }
     }
     
     fun updateTargetIPK(targetIPK: Float) {
