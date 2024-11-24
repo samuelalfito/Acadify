@@ -110,7 +110,7 @@ fun SimulasiNilaiIPKCard(
 
 @Preview
 @Composable
-fun SimulasiNilaiIPKCardPreview(modifier: Modifier = Modifier) {
+fun SimulasiNilaiIPKCardPreview() {
     SimulasiNilaiIPKCard(mataKuliah = MataKuliah("", TambahNilai("Matematika", 90f, 3f)),
         onEditClick = {},
         onDeleteClick = {})

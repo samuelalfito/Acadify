@@ -7,14 +7,10 @@ import com.acadify.model.data.MataKuliah
 import com.acadify.model.repository.network.FireFirestore
 import com.acadify.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class KelolaNilaiViewModel : ViewModel() {
     private val repository = FireFirestore()

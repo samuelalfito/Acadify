@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +23,6 @@ import com.acadify.model.data.TambahNilai
 import com.acadify.presentation.ui.theme.Blue40
 import com.acadify.presentation.ui.theme.Grey40
 import com.acadify.presentation.ui.theme.PurpleBlue40
-import com.acadify.presentation.ui.theme.PurpleBlue80
 import java.util.Locale
 
 @Composable

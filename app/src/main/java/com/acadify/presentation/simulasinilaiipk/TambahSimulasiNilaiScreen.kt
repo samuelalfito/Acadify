@@ -20,7 +20,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.TambahNilai
-import com.acadify.presentation.kelolanilai.KelolaNilaiViewModel
 
 @Composable
 fun TambahSimulasiNilaiScreen(
