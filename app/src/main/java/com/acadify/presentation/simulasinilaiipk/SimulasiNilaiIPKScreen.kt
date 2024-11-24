@@ -41,6 +41,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.acadify.model.data.MataKuliah
 import com.acadify.presentation.kelolanilai.DeleteNilaiScreen
+import com.acadify.presentation.navbar.NavBarScreen
+import com.acadify.presentation.navbar.NavBarViewModel
 import com.acadify.presentation.ui.theme.BlueLight2
 import com.acadify.presentation.ui.theme.Orange40
 import com.acadify.presentation.ui.theme.Pink80
@@ -48,7 +50,7 @@ import com.acadify.presentation.ui.theme.Purple40
 import com.acadify.utils.Resource
 
 @Composable
-fun SimulasiNilaiIPKScreen(navController: NavController) {
+fun SimulasiNilaiIPKScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
     var isTambahNilaiScreenVisible = remember { mutableStateOf(false) }
     var isEditNilaiScreenVisible = remember { mutableStateOf(false) }
     var isDeleteNilaiScreenVisible = remember { mutableStateOf(false) }
@@ -69,65 +71,8 @@ fun SimulasiNilaiIPKScreen(navController: NavController) {
             .fillMaxSize()
             .background(BlueLight2)
     ) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            item {
-                Card(modifier = Modifier
-                    .padding(10.dp)
-                    .clickable {
-                        navController.navigate("kelola_nilai")
-                    }) {
-                    Text(
-                        "Kelola Nilai",
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-                Card(modifier = Modifier
-                    .padding(10.dp)
-                    .clickable {
-                        navController.navigate("prediksi_ip")
-                    }) {
-                    Text(
-                        "Prediksi IP",
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-                Card(modifier = Modifier
-                    .padding(10.dp)
-                    .clickable {
-                        navController.navigate("analisis_akademik")
-                    }) {
-                    Text(
-                        "Analisis Akademik",
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .border(2.dp, Color.White, shape = RoundedCornerShape(10.dp)),
-                    colors = CardDefaults.cardColors(Purple40),
-                ) {
-                    Text(
-                        "Simulasi Nilai IPK",
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-            }
-        }
+        NavBarScreen(navController = navController, navBarViewModel = navBarViewModel)
+        
         Row {
             Card(
                 modifier = Modifier
@@ -234,5 +179,5 @@ fun SimulasiNilaiIPKScreen(navController: NavController) {
 @Preview
 @Composable
 fun PreviewSimulasiNilaiIPK() {
-    SimulasiNilaiIPKScreen(navController = rememberNavController())
+    SimulasiNilaiIPKScreen(navController = rememberNavController(), navBarViewModel = viewModel())
 }

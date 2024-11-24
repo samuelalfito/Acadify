@@ -39,12 +39,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.acadify.presentation.kelolanilai.KelolaNilaiCard
+import com.acadify.presentation.navbar.NavBarScreen
+import com.acadify.presentation.navbar.NavBarViewModel
 import com.acadify.presentation.ui.theme.BlueLight2
 import com.acadify.presentation.ui.theme.Purple40
 import com.acadify.utils.Resource
 
 @Composable
-fun AnalisisAkademikScreen(navController: NavController) {
+fun AnalisisAkademikScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
     val context = LocalContext.current
     val viewModel = viewModel<AnalisisAkademikViewModel>()
     val mataKuliahList = viewModel.mataKuliahList.collectAsState(initial = Resource.Loading())
@@ -58,66 +60,8 @@ fun AnalisisAkademikScreen(navController: NavController) {
             .fillMaxSize()
             .background(BlueLight2)
     ) {
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            item {
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .clickable {
-                            navController.navigate("kelola_nilai")
-                        }
-                ) {
-                    Text(
-                        "Kelola Nilai", modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .clickable {
-                            navController.navigate("prediksi_ip")
-                        }
-                ) {
-                    Text(
-                        "Prediksi IP", modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-                Card(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .border(2.dp, Color.White, shape = RoundedCornerShape(10.dp)),
-                    colors = CardDefaults.cardColors(Purple40),
-                ) {
-                    Text(
-                        "Analisis Akademik", modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-                Card(modifier = Modifier
-                    .padding(10.dp)
-                    .clickable {
-                        navController.navigate("simulasi_nilai_ipk")
-                    }) {
-                    Text(
-                        "Simulasi Nilai IPK", modifier = Modifier
-                            .padding(10.dp)
-                            .height(20.dp),
-                        color = Color.White
-                    )
-                }
-            }
-        }
+        NavBarScreen(navController = navController, navBarViewModel = navBarViewModel)
+        
         when (val value = mataKuliahList.value) {
             is Resource.Error -> {
                 Toast.makeText(
@@ -154,5 +98,5 @@ fun AnalisisAkademikScreen(navController: NavController) {
 @Preview
 @Composable
 fun PreviewAnalisisAkademikScreen() {
-    AnalisisAkademikScreen(navController = rememberNavController())
+    AnalisisAkademikScreen(navController = rememberNavController(), navBarViewModel = viewModel())
 }

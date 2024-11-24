@@ -43,9 +43,11 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.acadify.presentation.navbar.NavBarScreen
+import com.acadify.presentation.navbar.NavBarViewModel
 
 @Composable
-fun KelolaNilaiScreen(navController: NavController) {
+fun KelolaNilaiScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
     val viewModel: KelolaNilaiViewModel = viewModel()
     val context = LocalContext.current
     var index = 1
@@ -71,67 +73,8 @@ fun KelolaNilaiScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(BlueLight2)
         ) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                item {
-                    Card(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .border(2.dp, Color.White, shape = RoundedCornerShape(10.dp)),
-                        colors = CardDefaults.cardColors(Purple40),
-                    ) {
-                        Text(
-                            "Kelola Nilai",
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .height(20.dp),
-                            color = Color.White
-                        )
-                    }
-                    Card(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .clickable {
-                                navController.navigate("prediksi_ip")
-                            },
-                    ) {
-                        Text(
-                            "Prediksi IP",
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .height(20.dp),
-                            color = Color.White
-                        )
-                    }
-                    Card(modifier = Modifier
-                        .padding(10.dp)
-                        .clickable {
-                            navController.navigate("analisis_akademik")
-                        }) {
-                        Text(
-                            "Analisis Akademik",
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .height(20.dp),
-                            color = Color.White
-                        )
-                    }
-                    Card(modifier = Modifier
-                        .padding(10.dp)
-                        .clickable {
-                            navController.navigate("simulasi_nilai_ipk")
-                        }) {
-                        Text(
-                            "Simulasi Nilai IPK",
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .height(20.dp),
-                            color = Color.White
-                        )
-                    }
-                }
-            }
+            NavBarScreen(navController = navController, navBarViewModel = navBarViewModel)
+            
             Card(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 10.dp, bottom = 10.dp)
@@ -200,5 +143,5 @@ fun KelolaNilaiScreen(navController: NavController) {
 @Preview
 @Composable
 fun KelolaNilaiScreenPreview() {
-    KelolaNilaiScreen(navController = rememberNavController())
+    KelolaNilaiScreen(navController = rememberNavController(), navBarViewModel = viewModel())
 }

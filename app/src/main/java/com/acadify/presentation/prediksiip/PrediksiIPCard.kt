@@ -1,6 +1,5 @@
 package com.acadify.presentation.prediksiip
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,15 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.acadify.model.data.KomponenNilai
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.PrediksiIP
 import com.acadify.model.data.TambahNilai
-import com.acadify.presentation.analisisakademik.getColorForValue
 import com.acadify.presentation.ui.theme.Blue40
 import java.util.Locale
 
@@ -66,15 +62,14 @@ fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
             ),
         ) {
             Column(modifier = Modifier.padding(4.dp)) {
-                Text("Prediksi")
+//                Text("Prediksi")
                 Text(
                     String.format(
                         Locale.getDefault(),
-                        "Nilai: %.2f",
+                        "Prediksi\nNilai:\n%.2f",
                         prediksiIP.nilaiAkhir.firstOrNull() ?: 0f
                     )
                 )
-                Text(String.format(Locale.getDefault(), "IP    : %.2f", prediksiIP.prediksiIP))
             }
         }
     }
