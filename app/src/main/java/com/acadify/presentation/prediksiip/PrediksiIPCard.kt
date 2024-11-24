@@ -88,7 +88,7 @@ fun PrediksiIPCardPreview() {
     PrediksiIPCard(
         mataKuliah = MataKuliah(
             tambahNilai = TambahNilai("Matematika", 90f, 3f),
-            komponenNilai = KomponenNilai(3f, 2f, 3f, 2f, 25, 2, 3, 25)
+            komponenNilai = KomponenNilai(3f, 2f, 3f, 2f, 25f, 2f, 3f, 25f)
         ), prediksiIP = PrediksiIP(emptyList(), emptyList(), 0f)
     )
 }

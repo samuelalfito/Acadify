@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.acadify.model.data.KomponenNilai
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.TambahNilai
 
@@ -121,15 +120,6 @@ fun EditSimulasiNilaiScreenPreview() {
         viewModel = SimulasiNilaiIPKViewModel(), mataKuliah = MataKuliah(
             tambahNilai = TambahNilai(
                 nama = "Pemrograman Berorientasi Objek", nilai = 4.0f, jumlahSKS = 3.0f
-            ), komponenNilai = KomponenNilai(
-                nilaiTugas = 100.0f,
-                nilaiKuis = 100.0f,
-                nilaiUTS = 100.0f,
-                nilaiUAS = 100.0f,
-                persentaseTugas = 25,
-                persentaseKuis = 25,
-                persentaseUTS = 25,
-                persentaseUAS = 25
             )
         ), isEditNilaiScreenVisible = mutableStateOf(true)
     )
