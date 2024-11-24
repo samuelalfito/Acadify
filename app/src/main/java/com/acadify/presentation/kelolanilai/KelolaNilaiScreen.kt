@@ -5,25 +5,19 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,22 +38,24 @@ import com.acadify.model.data.MataKuliah
 import com.acadify.presentation.ui.theme.BlueLight2
 import com.acadify.presentation.ui.theme.Orange40
 import com.acadify.presentation.ui.theme.Purple40
-import com.acadify.presentation.ui.theme.PurpleBlue40
 import com.acadify.utils.Resource
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun KelolaNilaiScreen(navController: NavController) {
-    var isTambahNilaiScreenVisible = remember { mutableStateOf(false) }
-    var isEditNilaiScreenVisible = remember { mutableStateOf(false) }
-    var isDeleteNilaiScreenVisible = remember { mutableStateOf(false) }
-    val selectedMataKuliah = remember { mutableStateOf<MataKuliah?>(null) }
     val viewModel: KelolaNilaiViewModel = viewModel()
-    val mataKuliahList = viewModel.mataKuliahList.collectAsState(initial = Resource.Loading())
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     val context = LocalContext.current
     var index = 1
+    
+    val mataKuliahList by viewModel.mataKuliahList.collectAsState(initial = Resource.Loading())
+    val isTambahNilaiScreenVisible = remember { mutableStateOf(false) }
+    val isEditNilaiScreenVisible = remember { mutableStateOf(false) }
+    val isDeleteNilaiScreenVisible = remember { mutableStateOf(false) }
+    val selectedMataKuliah = remember { mutableStateOf<MataKuliah?>(null) }
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     
     LaunchedEffect(Unit) {
         viewModel.fetchKelolaNilai()
@@ -147,7 +143,7 @@ fun KelolaNilaiScreen(navController: NavController) {
                     "Tambah Nilai", modifier = Modifier.padding(10.dp), textAlign = TextAlign.Center
                 )
             }
-            when (val value = mataKuliahList.value) {
+            when (val value = mataKuliahList) {
                 is Resource.Error -> {
                     Toast.makeText(
                         context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_LONG
