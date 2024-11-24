@@ -22,6 +22,9 @@ import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.PrediksiIP
 import com.acadify.model.data.TambahNilai
 import com.acadify.presentation.ui.theme.Blue40
+import com.acadify.presentation.ui.theme.Grey40
+import com.acadify.presentation.ui.theme.PurpleBlue40
+import com.acadify.presentation.ui.theme.PurpleBlue80
 import java.util.Locale
 
 @Composable
@@ -30,7 +33,7 @@ fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
         Card(
             modifier = Modifier
                 .weight(1f)
-                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp),
+                .padding(top = 10.dp, bottom = 10.dp, start = 30.dp),
             colors = CardDefaults.cardColors(Blue40),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -41,10 +44,13 @@ fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Card(
-                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(PurpleBlue40)
                     ) {
                         Text(
-                            text = mataKuliah.tambahNilai.nama, modifier = Modifier.padding(8.dp)
+                            text = mataKuliah.tambahNilai.nama,
+                            modifier = Modifier.padding(8.dp),
+                            color = Color.White
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
@@ -57,18 +63,19 @@ fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
                 .wrapContentWidth()
                 .padding(end = 16.dp)
                 .align(Alignment.CenterVertically),
+            colors = CardDefaults.cardColors(Grey40),
             shape = RoundedCornerShape(
                 topStart = 0.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 8.dp
             ),
         ) {
             Column(modifier = Modifier.padding(4.dp)) {
-//                Text("Prediksi")
                 Text(
                     String.format(
                         Locale.getDefault(),
                         "Prediksi\nNilai:\n%.2f",
                         prediksiIP.nilaiAkhir.firstOrNull() ?: 0f
-                    )
+                    ),
+                    color = Color.White,
                 )
             }
         }

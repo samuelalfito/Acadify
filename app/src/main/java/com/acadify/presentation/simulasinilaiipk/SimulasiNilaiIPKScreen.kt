@@ -1,9 +1,7 @@
 package com.acadify.presentation.simulasinilaiipk
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,17 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,13 +31,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.acadify.model.data.MataKuliah
-import com.acadify.presentation.kelolanilai.DeleteNilaiScreen
 import com.acadify.presentation.navbar.NavBarScreen
 import com.acadify.presentation.navbar.NavBarViewModel
 import com.acadify.presentation.ui.theme.BlueLight2
+import com.acadify.presentation.ui.theme.Grey40
 import com.acadify.presentation.ui.theme.Orange40
-import com.acadify.presentation.ui.theme.Pink80
-import com.acadify.presentation.ui.theme.Purple40
 import com.acadify.utils.Resource
 
 @Composable
@@ -60,7 +49,6 @@ fun SimulasiNilaiIPKScreen(navController: NavController, navBarViewModel: NavBar
     val mataKuliahList = viewModel.mataKuliahList.collectAsState(Resource.Loading())
     val simulasiMataKuliah = viewModel.simulasiMataKuliah.collectAsState(emptyList())
     val targetIPK = viewModel.targetIPK.collectAsState()
-    val context = LocalContext.current
     
     LaunchedEffect(Unit) {
         viewModel.fetchKelolaNilai()
@@ -72,6 +60,24 @@ fun SimulasiNilaiIPKScreen(navController: NavController, navBarViewModel: NavBar
             .background(BlueLight2)
     ) {
         NavBarScreen(navController = navController, navBarViewModel = navBarViewModel)
+        
+        Card(
+            colors = CardDefaults.cardColors(Grey40),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Target IPK: ${targetIPK.value}",
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                )
+                Text(
+                    text = "Simulasi: ${viewModel.hitungIPK(mataKuliahList.value.data)}",
+                    textAlign = TextAlign.Center,
+                    color = Color.White,
+                )
+            }
+        }
         
         Row {
             Card(
@@ -96,27 +102,6 @@ fun SimulasiNilaiIPKScreen(navController: NavController, navBarViewModel: NavBar
                     "Atur Target IPK",
                     modifier = Modifier.padding(10.dp),
                     textAlign = TextAlign.Center
-                )
-            }
-        }
-        Card(
-            colors = CardDefaults.cardColors(Pink80),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Target IPK: ${targetIPK.value}",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.White,
-                )
-                Text(
-                    text = "Simulasi: ${viewModel.hitungIPK(mataKuliahList.value.data)}",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.White,
                 )
             }
         }

@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,7 +37,7 @@ import java.util.Locale
 @Composable
 fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
     val viewModel: PrediksiIPViewModel = viewModel()
-    val mataKuliahList = viewModel.mataKuliahList.collectAsState(initial = Resource.Loading())
+    val mataKuliahList by viewModel.mataKuliahList.collectAsState(initial = Resource.Loading())
     val prediksiIPList by viewModel.prediksiIP.collectAsState()
     
     LaunchedEffect(Unit) {
@@ -58,12 +59,12 @@ fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewMo
                 Text(
                     String.format(
                         Locale.getDefault(), "IP Semester ini\n%.2f", prediksiIPList.prediksiIP
-                    ), color = Color.White
+                    ), color = Color.White, textAlign = TextAlign.Center
                 )
             }
         }
         
-        when (mataKuliahList.value) {
+        when (mataKuliahList) {
             is Resource.Error -> {
                 Box(
                     modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
@@ -87,9 +88,9 @@ fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewMo
                     item {
                         Spacer(modifier = Modifier.height(50.dp))
                     }
-                    if (mataKuliahList.value.data?.isNotEmpty() == true) {
-                        items(count = mataKuliahList.value.data?.size ?: 0) { index ->
-                            val mataKuliah = mataKuliahList.value.data?.get(index)
+                    if (mataKuliahList.data?.isNotEmpty() == true) {
+                        items(count = mataKuliahList.data?.size ?: 0) { index ->
+                            val mataKuliah = mataKuliahList.data?.get(index)
                             if (mataKuliah != null) {
                                 val prediksiIP = PrediksiIP(
                                     nama = listOf(mataKuliah.tambahNilai.nama),
@@ -113,7 +114,6 @@ fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewMo
 @Composable
 fun PrediksiIPScreenPreview() {
     PrediksiIPScreen(
-        navController = NavController(LocalContext.current),
-        navBarViewModel = NavBarViewModel()
+        navController = NavController(LocalContext.current), navBarViewModel = NavBarViewModel()
     )
 }

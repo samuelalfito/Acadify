@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -16,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,7 +38,7 @@ fun SimulasiNilaiIPKCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
+            .padding(vertical = 10.dp, horizontal = 30.dp),
         colors = CardDefaults.cardColors(
             if (onEditClick != null && onDeleteClick != null) {
                 Green80
@@ -50,38 +53,57 @@ fun SimulasiNilaiIPKCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Card(
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(PurpleBlue40)
                 ) {
                     Text(
-                        text = mataKuliah.tambahNilai.nama, modifier = Modifier.padding(8.dp)
+                        text = mataKuliah.tambahNilai.nama,
+                        modifier = Modifier.padding(8.dp),
+                        color = Color.White
                     )
                 }
                 Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = "Nilai mata kuliah: ${mataKuliah.tambahNilai.nilai}")
-                Spacer(modifier = Modifier.padding(4.dp))
-                Text(text = "Jumlah SKS: ${mataKuliah.tambahNilai.jumlahSKS}")
+                Row {
+                    Text(text = "Nilai: ${mataKuliah.tambahNilai.nilai}")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(text = "SKS: ${mataKuliah.tambahNilai.jumlahSKS}")
+                }
             }
             if (onEditClick != null && onDeleteClick != null) {
                 Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_settings),
-                        contentDescription = "Edit",
+                    Card(
+                        shape = RoundedCornerShape(35),
+                        colors = CardDefaults.cardColors(PurpleBlue40),
                         modifier = Modifier
-                            .padding(end = 8.dp)
-                            .clickable {
-                                onEditClick(mataKuliah)
-                            },
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_delete),
-                        contentDescription = "Delete",
-                        modifier = Modifier.clickable(onClick = {
-                            onDeleteClick(mataKuliah)
-                        }),
-                    )
+                            .padding(start = 20.dp, end = 10.dp)
+                            .clickable(onClick = { onEditClick(mataKuliah) })
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.pencil),
+                            contentDescription = "Edit",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .padding(8.dp),
+                        )
+                    }
+                    Card(
+                        shape = RoundedCornerShape(35),
+                        colors = CardDefaults.cardColors(Color.Red),
+                        modifier = Modifier.clickable(onClick = { onDeleteClick(mataKuliah) })
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.trash_can),
+                            contentDescription = "Delete",
+                            tint = Color.White,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .padding(8.dp),
+                        )
+                    }
                 }
             }
         }

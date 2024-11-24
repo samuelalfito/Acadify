@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.acadify.model.data.MataKuliah
@@ -29,7 +28,7 @@ fun AnalisisAcademikCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
+            .padding(vertical = 10.dp, horizontal = 30.dp),
         colors = CardDefaults.cardColors(Blue40),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -40,35 +39,43 @@ fun AnalisisAcademikCard(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Card(
-                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.background)
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(PurpleBlue40)
                 ) {
                     Text(
-                        text = mataKuliah.tambahNilai.nama, modifier = Modifier.padding(8.dp)
+                        text = mataKuliah.tambahNilai.nama,
+                        modifier = Modifier.padding(8.dp),
+                        color = Color.White
                     )
                 }
                 Spacer(modifier = Modifier.padding(4.dp))
                 Text(text = "SKS: ${mataKuliah.tambahNilai.jumlahSKS}", color = Color.White)
             }
             Box(contentAlignment = Alignment.CenterEnd) {
-                Text(
-                    modifier = Modifier.padding(end = 1.dp),
-                    text = "Nilai: ${mataKuliah.tambahNilai.nilai}",
-                    color = Color.White
-                )
-                Text(
-                    text = "Nilai: ${mataKuliah.tambahNilai.nilai}",
-                    color = getColorForValue(mataKuliah.tambahNilai.nilai)
-                )
+                Card(
+                    modifier = Modifier.padding(start = 20.dp),
+                    shape = RoundedCornerShape(35),
+                    colors = CardDefaults.cardColors(getColorForValue(mataKuliah.tambahNilai.nilai))
+                ) {
+                    Text(
+                        modifier = Modifier.padding(5.dp),
+                        text = "Nilai: ${mataKuliah.tambahNilai.nilai}",
+                        color = Color.White
+                    )
+                }
             }
         }
     }
 }
 
 fun getColorForValue(value: Float): Color {
-    val green = Color(0xFF009A00) // Hijau
-    val red = Color(0xFFFF0000) // Merah
-    val fraction = value / 4f
-    return lerp(red, green, fraction)
+    return when {
+        value >= 4f -> Color(0xFF007D00)
+        value >= 3f -> Color(0xFF50BF50)
+        value >= 2f -> Color(0xFFFFFF00)
+        value >= 1f -> Color(0xFFFFA500)
+        else -> Color(0xFFEA0000)
+    }
 }
 
 @Preview
@@ -77,9 +84,7 @@ fun PreviewAnalisisAkademikCard() {
     AnalisisAcademikCard(
         mataKuliah = MataKuliah(
             tambahNilai = TambahNilai(
-                nama = "Pemrograman Berbasis Objek",
-                nilai = 90f,
-                jumlahSKS = 3f
+                nama = "Pemrograman Berbasis Objek", nilai = 3f, jumlahSKS = 3f
             )
         )
     )
