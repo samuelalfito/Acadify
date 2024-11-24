@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -24,9 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -50,25 +47,26 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.acadify.R
-import com.acadify.model.repository.network.FireAuth
 import com.acadify.presentation.auth.AuthViewModel
 import com.acadify.presentation.ui.theme.Green40
 import com.acadify.presentation.ui.theme.NunitoFontFamily
 import com.acadify.presentation.ui.theme.PurpleBlue40
 import com.acadify.presentation.ui.theme.PurpleBlue80
 import com.acadify.utils.Resource
-import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun RegisterScreen(navController: NavController) {
+    val viewModel: AuthViewModel = viewModel()
+    val context = LocalContext.current
+    
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
     var confirmPassword = remember { mutableStateOf("") }
-    var passwordVisible = remember { mutableStateOf(false) }
-    var confirmPasswordVisible = remember { mutableStateOf(false) }
-    val viewModel: AuthViewModel = viewModel()
-    val context = LocalContext.current
-    val registerState = viewModel.registerState.collectAsState(initial = Resource.Loading<Unit>())
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    val registerState by viewModel.registerState.collectAsState(initial = Resource.Loading())
     
     Column(
         modifier = Modifier
@@ -157,7 +155,7 @@ fun RegisterScreen(navController: NavController) {
                     value = password.value,
                     onValueChange = { newValue -> password.value = newValue },
                     placeholder = { Text("Password") },
-                    visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -167,14 +165,14 @@ fun RegisterScreen(navController: NavController) {
                     maxLines = 1,
                     singleLine = true
                 )
-                Icon(painter = painterResource(id = if (passwordVisible.value) R.drawable.eye_on else R.drawable.eye_off),
-                    contentDescription = if (passwordVisible.value) "Hide Password" else "Show Password",
+                Icon(painter = painterResource(id = if (passwordVisible) R.drawable.eye_on else R.drawable.eye_off),
+                    contentDescription = if (passwordVisible) "Hide Password" else "Show Password",
                     modifier = Modifier
                         .size(36.dp)
                         .align(Alignment.CenterVertically)
                         .padding(end = 20.dp)
                         .clickable {
-                            passwordVisible.value = !passwordVisible.value
+                            passwordVisible = !passwordVisible
                         })
             }
         }
@@ -208,7 +206,7 @@ fun RegisterScreen(navController: NavController) {
                     value = confirmPassword.value,
                     onValueChange = { newValue -> confirmPassword.value = newValue },
                     placeholder = { Text("Konfirmasi Password") },
-                    visualTransformation = if (confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -218,14 +216,14 @@ fun RegisterScreen(navController: NavController) {
                     maxLines = 1,
                     singleLine = true
                 )
-                Icon(painter = painterResource(id = if (confirmPasswordVisible.value) R.drawable.eye_on else R.drawable.eye_off),
-                    contentDescription = if (confirmPasswordVisible.value) "Hide Password" else "Show Password",
+                Icon(painter = painterResource(id = if (confirmPasswordVisible) R.drawable.eye_on else R.drawable.eye_off),
+                    contentDescription = if (confirmPasswordVisible) "Hide Password" else "Show Password",
                     modifier = Modifier
                         .size(36.dp)
                         .align(Alignment.CenterVertically)
                         .padding(end = 20.dp)
                         .clickable {
-                            confirmPasswordVisible.value = !confirmPasswordVisible.value
+                            confirmPasswordVisible = !confirmPasswordVisible
                         })
             }
         }
@@ -242,7 +240,7 @@ fun RegisterScreen(navController: NavController) {
                         Toast.makeText(
                             context, "Mohon isi semua field yang ada", Toast.LENGTH_SHORT
                         ).show()
-                    } else if (password != confirmPassword) {
+                    } else if (password.value != confirmPassword.value) {
                         Toast.makeText(
                             context,
                             "Register gagal, Password dengan konfirmasi password tidak sama",
@@ -279,37 +277,41 @@ fun RegisterScreen(navController: NavController) {
                     }
                 })
         }
-        when (registerState.value) {
-            is Resource.Error -> {
-                if (registerState.value.msg != null) {
-                    if (registerState.value.msg!!.contains(
-                            "wrong password", ignoreCase = true
-                        ) || registerState.value.msg!!.contains("no user record", ignoreCase = true)
-                    ) {
-                        Toast.makeText(
-                            context,
-                            "Login gagal, Email atau password tidak sesuai",
-                            Toast.LENGTH_SHORT
-                        ).show()
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (registerState) {
+                is Resource.Error -> {
+                    if (registerState.msg != null) {
+                        if (registerState.msg!!.contains(
+                                "wrong password", ignoreCase = true
+                            ) || registerState.msg!!.contains(
+                                "no user record", ignoreCase = true
+                            )
+                        ) {
+                            Toast.makeText(
+                                context,
+                                "Login gagal, Email atau password tidak sesuai",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            //                        Toast.makeText(context, loginState.value.msg, Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-//                        Toast.makeText(context, loginState.value.msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT
+                        ).show()
                     }
-                } else {
-                    Toast.makeText(
-                        context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT
-                    ).show()
                 }
-            }
-            
-            is Resource.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                
+                is Resource.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
                 }
-            }
-            
-            is Resource.Success -> {
-                navController.navigate("login_screen") {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                
+                is Resource.Success -> {
+                    navController.navigate("login_screen") {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
                 }
             }
         }
