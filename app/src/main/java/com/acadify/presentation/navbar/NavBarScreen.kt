@@ -1,15 +1,34 @@
 package com.acadify.presentation.navbar
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.acadify.R
+import com.acadify.presentation.auth.AuthViewModel
+import com.acadify.presentation.auth.logout.LogoutScreen
+import com.acadify.utils.Resource
 
 @Composable
 fun NavBarScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
     val navBarState by navBarViewModel.navBarState
+    val authViewModel: AuthViewModel = viewModel()
+    val loginState = authViewModel.loginState.collectAsState(initial = Resource.Loading<Unit>())
+    var isLogoutScreenVisible = remember { mutableStateOf(false) }
     
     LazyRow(
         modifier = Modifier.fillMaxWidth()
@@ -47,6 +66,37 @@ fun NavBarScreen(navController: NavController, navBarViewModel: NavBarViewModel)
                     navBarViewModel.navBarState.value = "simulasi_nilai_ipk"
                 }
             )
+            Card(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .clickable(onClick = {
+                        isLogoutScreenVisible.value = true
+                    }),
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .height(20.dp),
+                    painter = painterResource(id = R.drawable.ic_logout),
+                    tint = Color.White,
+                    contentDescription = ""
+                )
+            }
+        }
+    }
+    if (isLogoutScreenVisible.value) {
+        LogoutScreen(
+            isLogoutScreenVisible = isLogoutScreenVisible,
+            viewModel = authViewModel
+        )
+    }
+    when (loginState.value) {
+        is Resource.Error -> {}
+        is Resource.Loading -> {}
+        is Resource.Success -> {
+            navController.navigate("login_screen") {
+                popUpTo(0)
+            }
         }
     }
 }

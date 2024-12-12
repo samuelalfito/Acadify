@@ -70,6 +70,8 @@ class AuthViewModel : ViewModel() {
                 } catch (e: Exception) {
                     emit(Resource.Error(e.message ?: "Unknown error"))
                 }
+            }.collect {
+                _loginState.emit(it)
             }
         }
     }

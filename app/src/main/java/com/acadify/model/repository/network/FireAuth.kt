@@ -24,7 +24,7 @@ class FireAuth {
         }
     }
     
-    suspend fun logout(): Result<Unit> {
+    fun logout(): Result<Unit> {
         return try {
             auth.signOut()
             Result.success(Unit)
