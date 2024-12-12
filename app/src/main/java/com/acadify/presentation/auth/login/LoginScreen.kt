@@ -47,14 +47,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.acadify.R
-import com.acadify.model.repository.network.FireAuth
 import com.acadify.presentation.auth.AuthViewModel
 import com.acadify.presentation.ui.theme.Green40
 import com.acadify.presentation.ui.theme.NunitoFontFamily
 import com.acadify.presentation.ui.theme.PurpleBlue40
 import com.acadify.presentation.ui.theme.PurpleBlue80
 import com.acadify.utils.Resource
-import kotlinx.coroutines.delay
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -242,9 +240,7 @@ fun LoginScreen(navController: NavController) {
             
             is Resource.Success -> {
                 navController.navigate("kelola_nilai") {
-                    popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                    launchSingleTop = true
-                    restoreState = true
+                    popUpTo(0)
                 }
             }
         }
