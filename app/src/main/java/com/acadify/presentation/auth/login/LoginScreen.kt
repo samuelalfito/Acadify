@@ -25,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
@@ -56,12 +57,13 @@ import com.acadify.utils.Resource
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    var email = remember { mutableStateOf("") }
-    var password = remember { mutableStateOf("") }
-    var passwordVisible = remember { mutableStateOf(false) }
+    val context = LocalContext.current
     val viewModel: AuthViewModel = viewModel()
     val loginState = viewModel.loginState.collectAsState(initial = Resource.Loading<Unit>())
-    val context = LocalContext.current
+    
+    var email = remember { mutableStateOf("") }
+    var password = remember { mutableStateOf("") }
+    var passwordState = remember { mutableStateOf(false) }
     
     Column(
         modifier = Modifier
@@ -106,7 +108,8 @@ fun LoginScreen(navController: NavController) {
                     thickness = 2.dp,
                     color = Green40
                 )
-                TextField(value = email.value,
+                TextField(
+                    value = email.value,
                     onValueChange = { newValue -> email.value = newValue },
                     placeholder = { Text("Email") },
                     colors = TextFieldDefaults.colors(
@@ -150,7 +153,7 @@ fun LoginScreen(navController: NavController) {
                     value = password.value,
                     onValueChange = { newValue -> password.value = newValue },
                     placeholder = { Text("Password") },
-                    visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (passwordState.value) VisualTransformation.None else PasswordVisualTransformation(),
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -160,14 +163,14 @@ fun LoginScreen(navController: NavController) {
                     maxLines = 1,
                     singleLine = true
                 )
-                Icon(painter = painterResource(id = if (passwordVisible.value) R.drawable.eye_on else R.drawable.eye_off),
-                    contentDescription = if (passwordVisible.value) "Hide Password" else "Show Password",
+                Icon(painter = painterResource(id = if (passwordState.value) R.drawable.eye_on else R.drawable.eye_off),
+                    contentDescription = "",
                     modifier = Modifier
                         .size(36.dp)
                         .align(Alignment.CenterVertically)
                         .padding(end = 20.dp)
                         .clickable {
-                            passwordVisible.value = !passwordVisible.value
+                            passwordState.value = !passwordState.value
                         })
             }
         }
@@ -204,51 +207,44 @@ fun LoginScreen(navController: NavController) {
                 .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Don't have an account? Register",
-                color = Color.White,
-                modifier = Modifier.clickable {
-                    navController.navigate("register_screen")
-                })
+            TextButton(onClick = {
+                navController.navigate("register_screen") { popUpTo(0) }
+            }) {
+                Text("Don't have an account? Register", color = Color.White)
+            }
         }
-        when (loginState.value) {
-            is Resource.Error -> {
-                if (loginState.value.msg != null) {
-                    if (loginState.value.msg!!.contains(
-                            "wrong password", ignoreCase = true
-                        ) || loginState.value.msg!!.contains("no user record", ignoreCase = true)
-                    ) {
-                        Toast.makeText(
-                            context,
-                            "Login gagal, Email atau password tidak sesuai",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-//                        Toast.makeText(context, loginState.value.msg, Toast.LENGTH_SHORT).show()
-                    }
+    }
+    when (loginState.value) {
+        is Resource.Error -> {
+            if (loginState.value.msg != null) {
+                if (loginState.value.msg!!.contains("wrong password", ignoreCase = true) ||
+                    loginState.value.msg!!.contains("no user record", ignoreCase = true)
+                ) {
+                    Toast.makeText(
+                        context, "Login gagal. Email atau password tidak sesuai.", Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     Toast.makeText(
                         context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT
                     ).show()
                 }
+            } else {
+                Toast.makeText(
+                    context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT
+                ).show()
             }
-            
-            is Resource.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
+        }
+        
+        is Resource.Loading -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
-            
-            is Resource.Success -> {
-                navController.navigate("kelola_nilai") {
-                    popUpTo(0)
-                }
+        }
+        
+        is Resource.Success -> {
+            navController.navigate("kelola_nilai") {
+                popUpTo(0)
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun LoginPreview() {
-    LoginScreen(navController = NavController(LocalContext.current))
 }
