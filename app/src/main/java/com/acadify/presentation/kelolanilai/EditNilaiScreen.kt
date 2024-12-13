@@ -10,6 +10,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,12 +62,12 @@ fun EditNilaiScreen(
             text = { Text("Apakah anda yakin untuk meninggalkan halaman?") },
             confirmButton = {
                 Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    border = BorderStroke(1.dp, Color.Cyan),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                     onClick = {
                         showWarningDialog.value = false
                         isEditNilaiScreenVisible.value = false
                     }) {
-                    Text("Iya", color = Color.Cyan)
+                    Text("Iya", color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
@@ -300,9 +301,9 @@ fun EditNilaiScreen(
         }
     }, dismissButton = {
         Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            border = BorderStroke(1.dp, Color.Cyan),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
             onClick = { isEditNilaiScreenVisible.value = false }) {
-            Text("Batal", color = Color.Cyan)
+            Text("Batal", color = MaterialTheme.colorScheme.primary)
         }
     })
 }

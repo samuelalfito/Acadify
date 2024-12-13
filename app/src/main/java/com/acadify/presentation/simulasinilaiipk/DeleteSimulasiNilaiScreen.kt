@@ -1,9 +1,11 @@
 package com.acadify.presentation.simulasinilaiipk
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -11,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.TambahNilai
 
@@ -26,7 +29,8 @@ fun DeleteSimulasiNilaiScreen(
         title = { Text("Delete Nilai") },
         text = { Text("Apakah anda yakin menghapus nilai?") },
         confirmButton = {
-            Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+            Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                 onClick = {
                     viewModel.deleteMataKuliah(mataKuliah)
                     isDeleteNilaiScreenVisible.value = false
@@ -36,7 +40,7 @@ fun DeleteSimulasiNilaiScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }) {
-                Text("Hapus", color = Color.White)
+                Text("Hapus", color = MaterialTheme.colorScheme.primary)
             }
         },
         dismissButton = {
