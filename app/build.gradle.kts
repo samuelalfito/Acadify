@@ -82,4 +82,7 @@ dependencies {
     
     // Coroutines
     implementation(libs.accompanist.swiperefresh)
+    
+    // Gson
+    implementation(libs.gson)
 }
