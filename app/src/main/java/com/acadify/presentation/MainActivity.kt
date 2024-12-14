@@ -4,13 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.acadify.presentation.analisisakademik.AnalisisAkademikScreen
 import com.acadify.presentation.auth.login.LoginScreen
 import com.acadify.presentation.auth.register.RegisterScreen
+import com.acadify.presentation.kelolanilai.EditNilaiScreen
 import com.acadify.presentation.kelolanilai.KelolaNilaiScreen
+import com.acadify.presentation.kelolanilai.TambahNilaiScreen
 import com.acadify.presentation.navbar.NavBarViewModel
 import com.acadify.presentation.prediksiip.PrediksiIPScreen
 import com.acadify.presentation.simulasinilaiipk.SimulasiNilaiIPKScreen
@@ -42,6 +46,20 @@ class MainActivity : ComponentActivity() {
                     
                     composable("kelola_nilai") {
                         KelolaNilaiScreen(navController, navBarViewModel)
+                    }
+                    
+                    composable("kelola_tambah_nilai") {
+                        TambahNilaiScreen(navController)
+                    }
+                    
+                    composable(
+                        "kelola_edit_nilai/{mataKuliahId}",
+                        arguments = listOf(navArgument("mataKuliahId") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val mataKuliahId = backStackEntry.arguments?.getString("mataKuliahId")
+                        if (mataKuliahId != null) {
+                            EditNilaiScreen(navController, mataKuliahId)
+                        }
                     }
                     
                     composable("prediksi_ip") {
