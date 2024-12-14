@@ -111,7 +111,8 @@ fun RegisterScreen(navController: NavController) {
                     thickness = 2.dp,
                     color = Green40
                 )
-                TextField(value = email.value,
+                TextField(
+                    value = email.value,
                     onValueChange = { newValue -> email.value = newValue },
                     placeholder = { Text("Email") },
                     colors = TextFieldDefaults.colors(
@@ -240,18 +241,29 @@ fun RegisterScreen(navController: NavController) {
                         Toast.makeText(
                             context, "Mohon isi semua field yang ada", Toast.LENGTH_SHORT
                         ).show()
-                    } else if (password.value != confirmPassword.value) {
+                        return@Button
+                    }
+                    if (!email.value.endsWith("@gmail.com")) {
+                        Toast.makeText(
+                            context, "Mohon isi email dengan benar", Toast.LENGTH_SHORT
+                        ).show()
+                        return@Button
+                    }
+                    if (password.value.length < 6) {
+                        Toast.makeText(
+                            context, "Password terdiri dari minimal 6 karakter", Toast.LENGTH_SHORT
+                        ).show()
+                        return@Button
+                    }
+                    if (password.value != confirmPassword.value) {
                         Toast.makeText(
                             context,
                             "Register gagal, Password dengan konfirmasi password tidak sama",
                             Toast.LENGTH_SHORT
                         ).show()
-                    } else {
-                        viewModel.register(email.value, password.value)
-                        navController.navigate("login_screen") {
-                            popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                        }
+                        return@Button
                     }
+                    viewModel.register(email.value, password.value)
                 }) {
                 Text(
                     text = "Register",
@@ -277,49 +289,30 @@ fun RegisterScreen(navController: NavController) {
                     }
                 })
         }
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (registerState) {
-                is Resource.Error -> {
-                    if (registerState.msg != null) {
-                        if (registerState.msg!!.contains(
-                                "wrong password", ignoreCase = true
-                            ) || registerState.msg!!.contains(
-                                "no user record", ignoreCase = true
-                            )
-                        ) {
-                            Toast.makeText(
-                                context,
-                                "Login gagal, Email atau password tidak sesuai",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            //                        Toast.makeText(context, loginState.value.msg, Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(
-                            context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT
-                        ).show()
-                    }
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (registerState) {
+            is Resource.Error -> {
+                if (registerState.msg != null) {
+                    Toast.makeText(
+                        context, "Mohon isi email dengan benar", Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT
+                    ).show()
                 }
-                
-                is Resource.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
+            }
+            
+            is Resource.Loading -> {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                
-                is Resource.Success -> {
-                    navController.navigate("login_screen") {
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                    }
-                }
+            }
+            
+            is Resource.Success -> {
+                navController.navigate("login_screen") { popUpTo(0) }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun PreviewRegisterScreen() {
-    RegisterScreen(navController = NavController(LocalContext.current))
 }
