@@ -26,7 +26,6 @@ fun DeleteSimulasiNilaiScreen(
     val context = LocalContext.current
     
     AlertDialog(onDismissRequest = { isDeleteNilaiScreenVisible.value = false },
-        title = { Text("Delete Nilai") },
         text = { Text("Apakah anda yakin menghapus nilai?") },
         confirmButton = {
             Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
@@ -35,9 +34,7 @@ fun DeleteSimulasiNilaiScreen(
                     viewModel.deleteMataKuliah(mataKuliah)
                     isDeleteNilaiScreenVisible.value = false
                     Toast.makeText(
-                        context,
-                        "Nilai dengan ${mataKuliah.tambahNilai.nama} berhasi dihapus dari daftar",
-                        Toast.LENGTH_LONG
+                        context, "Nilai telah berhasil dihapus", Toast.LENGTH_LONG
                     ).show()
                 }) {
                 Text("Hapus", color = MaterialTheme.colorScheme.primary)

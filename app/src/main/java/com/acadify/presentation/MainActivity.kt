@@ -17,12 +17,16 @@ import com.acadify.presentation.kelolanilai.KelolaNilaiScreen
 import com.acadify.presentation.kelolanilai.TambahNilaiScreen
 import com.acadify.presentation.navbar.NavBarViewModel
 import com.acadify.presentation.prediksiip.PrediksiIPScreen
+import com.acadify.presentation.simulasinilaiipk.EditSimulasiNilaiScreen
 import com.acadify.presentation.simulasinilaiipk.SimulasiNilaiIPKScreen
+import com.acadify.presentation.simulasinilaiipk.SimulasiNilaiIPKViewModel
+import com.acadify.presentation.simulasinilaiipk.TambahSimulasiNilaiScreen
 import com.acadify.presentation.ui.theme.AcadifyTheme
 import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     private val navBarViewModel: NavBarViewModel by viewModels()
+    private val simulasiViewModel: SimulasiNilaiIPKViewModel by viewModels()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +71,21 @@ class MainActivity : ComponentActivity() {
                     }
                     
                     composable("simulasi_nilai_ipk") {
-                        SimulasiNilaiIPKScreen(navController, navBarViewModel)
+                        SimulasiNilaiIPKScreen(navController, navBarViewModel, simulasiViewModel)
+                    }
+                    
+                    composable("simulasi_tambah_nilai_ipk"){
+                        TambahSimulasiNilaiScreen(navController, simulasiViewModel)
+                    }
+                    
+                    composable(
+                        "simulasi_edit_nilai_ipk/{mataKuliahId}",
+                        arguments = listOf(navArgument("mataKuliahId") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val mataKuliahId = backStackEntry.arguments?.getString("mataKuliahId")
+                        if (mataKuliahId != null) {
+                            EditSimulasiNilaiScreen(navController, mataKuliahId, simulasiViewModel)
+                        }
                     }
                     
                     composable("analisis_akademik") {

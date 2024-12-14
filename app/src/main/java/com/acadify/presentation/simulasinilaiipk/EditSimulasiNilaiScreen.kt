@@ -2,136 +2,122 @@ package com.acadify.presentation.simulasinilaiipk
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.TambahNilai
+import com.acadify.presentation.ui.theme.BlueLight2
 
 @Composable
 fun EditSimulasiNilaiScreen(
-    viewModel: SimulasiNilaiIPKViewModel,
-    mataKuliah: MataKuliah,
-    isEditNilaiScreenVisible: MutableState<Boolean>,
+    navController: NavController,
+    mataKuliahId: String,
+    simulasiViewModel: SimulasiNilaiIPKViewModel,
 ) {
-    var nama = remember { mutableStateOf(mataKuliah.tambahNilai.nama) }
-    var nilai = remember { mutableStateOf(mataKuliah.tambahNilai.nilai.toString()) }
-    var jumlahSKS = remember { mutableStateOf(mataKuliah.tambahNilai.jumlahSKS.toString()) }
     val context = LocalContext.current
-    val showWarningDialog = remember { mutableStateOf(false) }
+    val simulasiMataKuliah by simulasiViewModel.simulasiMataKuliah.collectAsState()
+    val mataKuliah = simulasiMataKuliah.find { it.id == mataKuliahId }
     
-    if (showWarningDialog.value) {
-        AlertDialog(onDismissRequest = { showWarningDialog.value = false },
-            title = { Text("Peringatan") },
-            text = { Text("Apakah anda yakin untuk meninggalkan halaman?") },
-            confirmButton = {
-                Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                    onClick = {
-                        showWarningDialog.value = false
-                        isEditNilaiScreenVisible.value = false
-                    }) {
-                    Text("Iya", color = MaterialTheme.colorScheme.primary)
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showWarningDialog.value = false }) {
-                    Text("Tidak")
-                }
-            })
-    }
-    
-    AlertDialog(onDismissRequest = {
-        showWarningDialog.value = true
-    }, title = { Text("Edit Nilai") }, text = {
-        Column(modifier = Modifier.padding(8.dp)) {
-            OutlinedTextField(
-                value = nama.value,
-                onValueChange = { newValue -> nama.value = newValue },
-                placeholder = { Text("Nama") },
-                modifier = Modifier.padding(bottom = 10.dp),
-                maxLines = 1,
-                singleLine = true
-            )
-            OutlinedTextField(
-                value = nilai.value,
-                onValueChange = { newValue -> nilai.value = newValue },
-                placeholder = { Text("Nilai") },
-                modifier = Modifier.padding(bottom = 10.dp),
-                maxLines = 1,
-                singleLine = true
-            )
-            OutlinedTextField(
-                value = jumlahSKS.value,
-                onValueChange = { newValue -> jumlahSKS.value = newValue },
-                placeholder = { Text("jumlahSKS") },
-                modifier = Modifier.padding(bottom = 10.dp),
-                maxLines = 1,
-                singleLine = true
-            )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BlueLight2)
+            .padding(16.dp)
+    ) {
+        if (mataKuliah == null) {
+            return
         }
-    }, confirmButton = {
-        Button(onClick = {
-            if (nama.value.any { it.isDigit() } || nilai.value.toFloatOrNull() == null || jumlahSKS.value.toFloatOrNull() == null) {
-                Toast.makeText(
-                    context, "Mohon isi semua field dengan benar", Toast.LENGTH_SHORT
-                ).show()
-                return@Button
+        val nama = remember { mutableStateOf(mataKuliah.tambahNilai.nama) }
+        val nilai = remember { mutableStateOf(mataKuliah.tambahNilai.nilai.toString()) }
+        val jumlahSKS = remember { mutableStateOf(mataKuliah.tambahNilai.jumlahSKS.toString()) }
+        
+        OutlinedTextField(value = nama.value,
+            onValueChange = { newValue -> nama.value = newValue },
+            label = { Text("Nama") },
+            modifier = Modifier.padding(bottom = 10.dp),
+            maxLines = 1,
+            singleLine = true
+        )
+        OutlinedTextField(value = nilai.value,
+            onValueChange = { newValue -> nilai.value = newValue },
+            label = { Text("Nilai") },
+            modifier = Modifier.padding(bottom = 10.dp),
+            maxLines = 1,
+            singleLine = true
+        )
+        OutlinedTextField(value = jumlahSKS.value,
+            onValueChange = { newValue -> jumlahSKS.value = newValue },
+            label = { Text("Jumlah SKS") },
+            modifier = Modifier.padding(bottom = 10.dp),
+            maxLines = 1,
+            singleLine = true
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                onClick = { navController.popBackStack() }) {
+                Text("Batal", color = MaterialTheme.colorScheme.primary)
             }
-            if (nama.value.isEmpty() || nilai.value.isEmpty() || jumlahSKS.value.isEmpty()) {
-                return@Button
-            }
-            if (nilai.value.toFloat() !in 0.0..4.0) {
-                Toast.makeText(
-                    context, "Nilai dalam skala 4", Toast.LENGTH_SHORT
-                ).show()
-                return@Button
-            }
-            viewModel.updateMataKuliah(
-                oldValue = mataKuliah, newValue = MataKuliah(
-                    mataKuliah.id, TambahNilai(
-                        nama = nama.value,
-                        nilai = nilai.value.toFloat(),
-                        jumlahSKS = jumlahSKS.value.toFloat()
-                    ), null
+            Button(onClick = {
+                if (nama.value.any { it.isDigit() } || nilai.value.toFloatOrNull() == null || jumlahSKS.value.toFloatOrNull() == null) {
+                    Toast.makeText(
+                        context, "Mohon isi semua field dengan benar", Toast.LENGTH_SHORT
+                    ).show()
+                    return@Button
+                }
+                if (nilai.value.toFloat() !in 0.0..4.0) {
+                    Toast.makeText(context, "Nilai dalam skala 4", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+                simulasiViewModel.updateMataKuliah(
+                    MataKuliah(
+                        id = mataKuliah.id, tambahNilai = TambahNilai(
+                            nama = nama.value,
+                            nilai = nilai.value.toFloat(),
+                            jumlahSKS = jumlahSKS.value.toFloat()
+                        ), komponenNilai = null
+                    )
                 )
-            )
-            isEditNilaiScreenVisible.value = false
-            Toast.makeText(context, "Nilai berhasil diubah", Toast.LENGTH_SHORT).show()
-        }) {
-            Text("Simpan")
+                navController.popBackStack()
+                Toast.makeText(context, "Nilai berhasil diubah", Toast.LENGTH_SHORT).show()
+            }) {
+                Text("Simpan")
+            }
         }
-    }, dismissButton = {
-        Button(colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-            onClick = { isEditNilaiScreenVisible.value = false }) {
-            Text("Batal", color = MaterialTheme.colorScheme.primary)
-        }
-    })
+    }
 }
 
 @Preview
 @Composable
 fun EditSimulasiNilaiScreenPreview() {
     EditSimulasiNilaiScreen(
-        viewModel = SimulasiNilaiIPKViewModel(), mataKuliah = MataKuliah(
-            tambahNilai = TambahNilai(
-                nama = "Pemrograman Berorientasi Objek", nilai = 4.0f, jumlahSKS = 3.0f
-            )
-        ), isEditNilaiScreenVisible = mutableStateOf(true)
+        navController = NavController(LocalContext.current), mataKuliahId = "1", viewModel()
     )
 }

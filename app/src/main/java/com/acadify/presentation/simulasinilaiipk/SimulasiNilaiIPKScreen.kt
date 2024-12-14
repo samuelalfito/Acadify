@@ -4,21 +4,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,58 +41,48 @@ import com.acadify.presentation.ui.theme.Orange40
 import com.acadify.utils.Resource
 
 @Composable
-fun SimulasiNilaiIPKScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
-    var isTambahNilaiScreenVisible = remember { mutableStateOf(false) }
-    var isEditNilaiScreenVisible = remember { mutableStateOf(false) }
+fun SimulasiNilaiIPKScreen(
+    navController: NavController,
+    navBarViewModel: NavBarViewModel,
+    simulasiViewModel: SimulasiNilaiIPKViewModel,
+) {
     var isDeleteNilaiScreenVisible = remember { mutableStateOf(false) }
     var isAturTargetIPKScreenVisible = remember { mutableStateOf(false) }
     val selectedMataKuliah = remember { mutableStateOf<MataKuliah?>(null) }
-    val viewModel: SimulasiNilaiIPKViewModel = viewModel()
-    val mataKuliahList = viewModel.mataKuliahList.collectAsState(Resource.Loading())
-    val simulasiMataKuliah = viewModel.simulasiMataKuliah.collectAsState(emptyList())
-    val targetIPK = viewModel.targetIPK.collectAsState()
+    val mataKuliahList by simulasiViewModel.mataKuliahList.collectAsState(Resource.Loading())
+    val simulasiMataKuliah by simulasiViewModel.simulasiMataKuliah.collectAsState(emptyList())
+    val targetIPK by simulasiViewModel.targetIPK.collectAsState()
     
     LaunchedEffect(Unit) {
-        viewModel.fetchKelolaNilai()
+        simulasiViewModel.fetchKelolaNilai()
     }
     
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BlueLight2)
-    ) {
-        NavBarScreen(navController = navController, navBarViewModel = navBarViewModel)
-        
-        Card(
-            colors = CardDefaults.cardColors(Grey40),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BlueLight2)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Target IPK: ${targetIPK.value}",
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                )
-                Text(
-                    text = "Simulasi: ${viewModel.hitungIPK(mataKuliahList.value.data)}",
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                )
-            }
-        }
-        
-        Row {
+            NavBarScreen(navController = navController, navBarViewModel = navBarViewModel)
+            
             Card(
-                modifier = Modifier
-                    .padding(top = 20.dp, start = 10.dp, bottom = 10.dp)
-                    .clickable {
-                        isTambahNilaiScreenVisible.value = !isTambahNilaiScreenVisible.value
-                    }, colors = CardDefaults.cardColors(Orange40)
+                colors = CardDefaults.cardColors(Grey40),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(
-                    "Tambah Nilai", modifier = Modifier.padding(10.dp), textAlign = TextAlign.Center
-                )
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Target IPK: $targetIPK",
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                    )
+                    Text(
+                        text = "Simulasi: ${simulasiViewModel.hitungIPK(mataKuliahList.data)}",
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                    )
+                }
             }
+            
             Card(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 10.dp, bottom = 10.dp)
@@ -104,65 +96,67 @@ fun SimulasiNilaiIPKScreen(navController: NavController, navBarViewModel: NavBar
                     textAlign = TextAlign.Center
                 )
             }
-        }
-        when (val value = mataKuliahList.value) {
-            is Resource.Error -> {
-            }
-            
-            is Resource.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+            when (val value = mataKuliahList) {
+                is Resource.Error -> {
                 }
-            }
-            
-            is Resource.Success -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(50.dp))
+                
+                is Resource.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
-                    if (value.data?.isNotEmpty() == true) {
-                        items(value.data) { mataKuliah ->
-                            SimulasiNilaiIPKCard(mataKuliah = mataKuliah)
+                }
+                
+                is Resource.Success -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (simulasiMataKuliah.isNotEmpty()) {
+                            items(simulasiMataKuliah) { mataKuliah ->
+                                SimulasiNilaiIPKCard(mataKuliah = mataKuliah, onEditClick = {
+                                    navController.navigate("simulasi_edit_nilai_ipk/${mataKuliah.id}")
+                                }, onDeleteClick = {
+                                    selectedMataKuliah.value = mataKuliah
+                                    isDeleteNilaiScreenVisible.value = true
+                                })
+                            }
                         }
-                    }
-                    if (simulasiMataKuliah.value.isNotEmpty()) {
-                        items(simulasiMataKuliah.value) { mataKuliah ->
-                            SimulasiNilaiIPKCard(mataKuliah = mataKuliah, onEditClick = {
-                                selectedMataKuliah.value = mataKuliah
-                                isEditNilaiScreenVisible.value = true
-                            }, onDeleteClick = {
-                                selectedMataKuliah.value = mataKuliah
-                                isDeleteNilaiScreenVisible.value = true
-                            })
+                        if (value.data?.isNotEmpty() == true) {
+                            items(value.data) { mataKuliah ->
+                                SimulasiNilaiIPKCard(mataKuliah = mataKuliah)
+                            }
                         }
                     }
                 }
             }
         }
-        
-    }
-    if (isTambahNilaiScreenVisible.value) {
-        TambahSimulasiNilaiScreen(viewModel, isTambahNilaiScreenVisible)
-    }
-    if (isEditNilaiScreenVisible.value && selectedMataKuliah.value != null) {
-        EditSimulasiNilaiScreen(viewModel, selectedMataKuliah.value!!, isEditNilaiScreenVisible)
-    }
-    if (isDeleteNilaiScreenVisible.value && selectedMataKuliah.value != null) {
-        DeleteSimulasiNilaiScreen(
-            viewModel, selectedMataKuliah.value!!, isDeleteNilaiScreenVisible
-        )
-    }
-    if (isAturTargetIPKScreenVisible.value) {
-        AturTargetIPKScreen(viewModel, isAturTargetIPKScreenVisible)
+        if (isDeleteNilaiScreenVisible.value && selectedMataKuliah.value != null) {
+            DeleteSimulasiNilaiScreen(
+                simulasiViewModel, selectedMataKuliah.value!!, isDeleteNilaiScreenVisible
+            )
+        }
+        if (isAturTargetIPKScreenVisible.value) {
+            AturTargetIPKScreen(simulasiViewModel, isAturTargetIPKScreenVisible)
+        }
+        FloatingActionButton(
+            onClick = {
+                navController.navigate("simulasi_tambah_nilai_ipk")
+            },
+            containerColor = Orange40,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.BottomEnd)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add, contentDescription = ""
+            )
+        }
     }
 }
 
 @Preview
 @Composable
 fun PreviewSimulasiNilaiIPK() {
-    SimulasiNilaiIPKScreen(navController = rememberNavController(), navBarViewModel = viewModel())
+    SimulasiNilaiIPKScreen(navController = rememberNavController(), navBarViewModel = viewModel(), simulasiViewModel = viewModel())
 }
