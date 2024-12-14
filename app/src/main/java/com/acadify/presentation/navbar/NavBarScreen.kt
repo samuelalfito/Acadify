@@ -1,5 +1,6 @@
 package com.acadify.presentation.navbar
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,6 +29,8 @@ import com.acadify.utils.Resource
 fun NavBarScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
     val navBarState by navBarViewModel.navBarState
     val authViewModel: AuthViewModel = viewModel()
+    val context = LocalContext.current
+    
     val loginState = authViewModel.loginState.collectAsState(initial = Resource.Loading<Unit>())
     var isLogoutScreenVisible = remember { mutableStateOf(false) }
     
@@ -34,38 +38,28 @@ fun NavBarScreen(navController: NavController, navBarViewModel: NavBarViewModel)
         modifier = Modifier.fillMaxWidth()
     ) {
         item {
-            NavBarCard(
-                title = "Kelola Nilai",
+            NavBarCard(title = "Kelola Nilai",
                 isSelected = navBarState == "kelola_nilai",
                 onClick = {
                     navController.navigate("kelola_nilai")
                     navBarViewModel.navBarState.value = "kelola_nilai"
-                }
-            )
-            NavBarCard(
-                title = "Prediksi IP",
-                isSelected = navBarState == "prediksi_ip",
-                onClick = {
-                    navController.navigate("prediksi_ip")
-                    navBarViewModel.navBarState.value = "prediksi_ip"
-                }
-            )
-            NavBarCard(
-                title = "Analisis Akademik",
+                })
+            NavBarCard(title = "Prediksi IP", isSelected = navBarState == "prediksi_ip", onClick = {
+                navController.navigate("prediksi_ip")
+                navBarViewModel.navBarState.value = "prediksi_ip"
+            })
+            NavBarCard(title = "Analisis Akademik",
                 isSelected = navBarState == "analisis_akademik",
                 onClick = {
                     navController.navigate("analisis_akademik")
                     navBarViewModel.navBarState.value = "analisis_akademik"
-                }
-            )
-            NavBarCard(
-                title = "Simulasi Nilai IPK",
+                })
+            NavBarCard(title = "Simulasi Nilai IPK",
                 isSelected = navBarState == "simulasi_nilai_ipk",
                 onClick = {
                     navController.navigate("simulasi_nilai_ipk")
                     navBarViewModel.navBarState.value = "simulasi_nilai_ipk"
-                }
-            )
+                })
             Card(
                 modifier = Modifier
                     .padding(10.dp)
@@ -86,8 +80,7 @@ fun NavBarScreen(navController: NavController, navBarViewModel: NavBarViewModel)
     }
     if (isLogoutScreenVisible.value) {
         LogoutScreen(
-            isLogoutScreenVisible = isLogoutScreenVisible,
-            viewModel = authViewModel
+            isLogoutScreenVisible = isLogoutScreenVisible, viewModel = authViewModel
         )
     }
     when (loginState.value) {
@@ -97,6 +90,9 @@ fun NavBarScreen(navController: NavController, navBarViewModel: NavBarViewModel)
             navController.navigate("login_screen") {
                 popUpTo(0)
             }
+            Toast.makeText(
+                context, "Anda keluar dari akun", Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
