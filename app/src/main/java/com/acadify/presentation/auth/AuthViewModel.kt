@@ -75,4 +75,16 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
+    
+    fun setRegisterState(state: Resource<Unit>) {
+        viewModelScope.launch {
+            _registerState.emit(state)
+        }
+    }
+    
+    fun setLoginState(state: Resource<Unit>) {
+        viewModelScope.launch {
+            _loginState.emit(state)
+        }
+    }
 }

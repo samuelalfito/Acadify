@@ -59,7 +59,7 @@ import com.acadify.utils.Resource
 fun LoginScreen(navController: NavController) {
     val context = LocalContext.current
     val viewModel: AuthViewModel = viewModel()
-    val loginState = viewModel.loginState.collectAsState(initial = Resource.Loading<Unit>())
+    val loginState = viewModel.loginState.collectAsState(initial = null)
     
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
@@ -188,6 +188,7 @@ fun LoginScreen(navController: NavController) {
                             context, "Mohon isi semua field yang ada", Toast.LENGTH_SHORT
                         ).show()
                     } else {
+                        viewModel.setLoginState(Resource.Loading())
                         viewModel.login(email.value, password.value)
                     }
                 }) {
@@ -216,9 +217,9 @@ fun LoginScreen(navController: NavController) {
     }
     when (loginState.value) {
         is Resource.Error -> {
-            if (loginState.value.msg != null) {
-                if (loginState.value.msg!!.contains("wrong password", ignoreCase = true) ||
-                    loginState.value.msg!!.contains("no user record", ignoreCase = true)
+            if ((loginState.value as Resource.Error<Unit>).msg != null) {
+                if ((loginState.value as Resource.Error<Unit>).msg!!.contains("wrong password", ignoreCase = true) ||
+                    (loginState.value as Resource.Error<Unit>).msg!!.contains("no user record", ignoreCase = true)
                 ) {
                     Toast.makeText(
                         context, "Login gagal. Email atau password tidak sesuai.", Toast.LENGTH_SHORT
@@ -236,7 +237,11 @@ fun LoginScreen(navController: NavController) {
         }
         
         is Resource.Loading -> {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+                .clickable(enabled = false) {}
+            ) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
@@ -245,6 +250,10 @@ fun LoginScreen(navController: NavController) {
             navController.navigate("kelola_nilai") {
                 popUpTo(0)
             }
+        }
+        
+        null -> {
+            // Do nothing
         }
     }
 }

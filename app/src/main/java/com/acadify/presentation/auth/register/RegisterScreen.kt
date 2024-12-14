@@ -66,7 +66,7 @@ fun RegisterScreen(navController: NavController) {
     var confirmPassword = remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
-    val registerState by viewModel.registerState.collectAsState(initial = Resource.Loading())
+    val registerState by viewModel.registerState.collectAsState(null)
     
     Column(
         modifier = Modifier
@@ -263,6 +263,7 @@ fun RegisterScreen(navController: NavController) {
                         ).show()
                         return@Button
                     }
+                    viewModel.setRegisterState(Resource.Loading())
                     viewModel.register(email.value, password.value)
                 }) {
                 Text(
@@ -285,7 +286,7 @@ fun RegisterScreen(navController: NavController) {
                 color = Color.White,
                 modifier = Modifier.clickable {
                     navController.navigate("login_screen") {
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                        popUpTo(0)
                     }
                 })
         }
@@ -293,7 +294,7 @@ fun RegisterScreen(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (registerState) {
             is Resource.Error -> {
-                if (registerState.msg != null) {
+                if ((registerState as Resource.Error<Unit>).msg != null) {
                     Toast.makeText(
                         context, "Mohon isi email dengan benar", Toast.LENGTH_SHORT
                     ).show()
@@ -305,13 +306,21 @@ fun RegisterScreen(navController: NavController) {
             }
             
             is Resource.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable(enabled = false) {}
+                ) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
             
             is Resource.Success -> {
                 navController.navigate("login_screen") { popUpTo(0) }
+            }
+            
+            null -> {
+                // Do nothing
             }
         }
     }
