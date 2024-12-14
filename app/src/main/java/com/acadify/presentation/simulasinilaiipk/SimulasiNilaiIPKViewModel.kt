@@ -1,6 +1,5 @@
 package com.acadify.presentation.simulasinilaiipk
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acadify.model.data.MataKuliah
@@ -41,15 +40,14 @@ class SimulasiNilaiIPKViewModel : ViewModel() {
         _simulasiMataKuliah.value = _simulasiMataKuliah.value + mataKuliah
     }
     
-    fun updateMataKuliah(oldValue: MataKuliah , newValue: MataKuliah) {
+    fun updateMataKuliah(mataKuliah: MataKuliah) {
         _simulasiMataKuliah.value = _simulasiMataKuliah.value.map {
-            if (it.id == oldValue.id) {
-                newValue
+            if (it.id == mataKuliah.id) {
+                mataKuliah
             } else {
                 it
             }
         }
-        Log.d("KelolaNilaiViewModel", "updateMataKuliah: $mataKuliahList")
     }
     
     fun deleteMataKuliah(mataKuliah: MataKuliah) {
@@ -73,7 +71,6 @@ class SimulasiNilaiIPKViewModel : ViewModel() {
             totalNilai += it.tambahNilai.nilai * it.tambahNilai.jumlahSKS
         }
         val ipk = totalNilai / totalSKS
-        Log.d("SimulasiNilaiIPKViewModel", "hitungIPK: $ipk")
         return ipk
     }
 }
