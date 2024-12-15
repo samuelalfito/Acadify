@@ -1,10 +1,12 @@
 package com.acadify.presentation.prediksiip
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.acadify.model.data.MataKuliah
 import com.acadify.model.data.PrediksiIP
 import com.acadify.model.repository.network.FireFirestore
+import com.acadify.utils.ConnectivityChecker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,8 +26,13 @@ class PrediksiIPViewModel : ViewModel() {
     private var _prediksiIP = MutableStateFlow(PrediksiIP(emptyList(), emptyList(), 0f))
     val prediksiIP: StateFlow<PrediksiIP> = _prediksiIP
     
-    fun hitungPrediksiIP() {
+    fun hitungPrediksiIP(context: Context) {
         viewModelScope.launch {
+            if (!ConnectivityChecker.isOnline(context)) {
+                _mataKuliahList.send(Resource.Error("No internet connection"))
+                return@launch
+            }
+            
             flow {
                 emit(Resource.Loading())
                 emit(repository.fetchKelolaNilai(userId))
@@ -39,9 +46,12 @@ class PrediksiIPViewModel : ViewModel() {
                         mataKuliah.komponenNilai?.let { komponenNilai ->
                             val nilaiTugas =
                                 komponenNilai.nilaiTugas * komponenNilai.persentaseTugas / 100
-                            val nilaiKuis = komponenNilai.nilaiKuis * komponenNilai.persentaseKuis / 100
-                            val nilaiUTS = komponenNilai.nilaiUTS * komponenNilai.persentaseUTS / 100
-                            val nilaiUAS = komponenNilai.nilaiUAS * komponenNilai.persentaseUAS / 100
+                            val nilaiKuis =
+                                komponenNilai.nilaiKuis * komponenNilai.persentaseKuis / 100
+                            val nilaiUTS =
+                                komponenNilai.nilaiUTS * komponenNilai.persentaseUTS / 100
+                            val nilaiUAS =
+                                komponenNilai.nilaiUAS * komponenNilai.persentaseUAS / 100
                             val totalNilai = nilaiTugas + nilaiKuis + nilaiUTS + nilaiUAS
                             
                             updatedPrediksi.add(

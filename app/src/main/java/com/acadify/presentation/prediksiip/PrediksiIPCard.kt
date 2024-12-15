@@ -1,11 +1,11 @@
 package com.acadify.presentation.prediksiip
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,9 +29,7 @@ import java.util.Locale
 fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
     Row {
         Card(
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 10.dp, bottom = 10.dp, start = 30.dp),
+            modifier = Modifier.padding(10.dp),
             colors = CardDefaults.cardColors(Blue40),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -40,7 +38,7 @@ fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Column(modifier = Modifier.weight(1f)) {
+                Column {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(PurpleBlue40)
@@ -52,29 +50,30 @@ fun PrediksiIPCard(mataKuliah: MataKuliah, prediksiIP: PrediksiIP) {
                         )
                     }
                     Spacer(modifier = Modifier.padding(4.dp))
-                    Text(text = "SKS: ${mataKuliah.tambahNilai.jumlahSKS}", color = Color.White)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "SKS: ${mataKuliah.tambahNilai.jumlahSKS}", color = Color.White)
+                        Card(
+                            colors = CardDefaults.cardColors(Grey40),
+                            shape = RoundedCornerShape(
+                                topStart = 8.dp, topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp
+                            ),
+                        ) {
+                            Text(
+                                String.format(
+                                    Locale.getDefault(),
+                                    "Kontribusi: %.2f",
+                                    prediksiIP.nilaiAkhir.firstOrNull() ?: 0f
+                                ),
+                                modifier = Modifier.padding(8.dp),
+                                color = Color.White,
+                            )
+                        }
+                    }
                 }
-            }
-        }
-        Card(
-            modifier = Modifier
-                .wrapContentWidth()
-                .padding(end = 16.dp)
-                .align(Alignment.CenterVertically),
-            colors = CardDefaults.cardColors(Grey40),
-            shape = RoundedCornerShape(
-                topStart = 0.dp, topEnd = 8.dp, bottomStart = 0.dp, bottomEnd = 8.dp
-            ),
-        ) {
-            Column(modifier = Modifier.padding(4.dp)) {
-                Text(
-                    String.format(
-                        Locale.getDefault(),
-                        "Prediksi\nNilai:\n%.2f",
-                        prediksiIP.nilaiAkhir.firstOrNull() ?: 0f
-                    ),
-                    color = Color.White,
-                )
             }
         }
     }

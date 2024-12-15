@@ -1,12 +1,11 @@
 package com.acadify.presentation.prediksiip
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
@@ -37,11 +36,12 @@ import java.util.Locale
 @Composable
 fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewModel) {
     val viewModel: PrediksiIPViewModel = viewModel()
+    val context = LocalContext.current
     val mataKuliahList by viewModel.mataKuliahList.collectAsState(initial = Resource.Loading())
     val prediksiIPList by viewModel.prediksiIP.collectAsState()
     
     LaunchedEffect(Unit) {
-        viewModel.hitungPrediksiIP()
+        viewModel.hitungPrediksiIP(context)
     }
     
     Column(
@@ -58,7 +58,7 @@ fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewMo
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     String.format(
-                        Locale.getDefault(), "IP Semester ini\n%.2f", prediksiIPList.prediksiIP
+                        Locale.getDefault(), "Prediksi IP\n%.2f", prediksiIPList.prediksiIP
                     ), color = Color.White, textAlign = TextAlign.Center
                 )
             }
@@ -66,11 +66,7 @@ fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewMo
         
         when (mataKuliahList) {
             is Resource.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
-                ) {
-                    Text("Error")
-                }
+                Toast.makeText(context, "Terjadi kesalahan. Coba lagi nanti.", Toast.LENGTH_SHORT).show()
             }
             
             is Resource.Loading -> {
@@ -85,9 +81,6 @@ fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewMo
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    item {
-                        Spacer(modifier = Modifier.height(50.dp))
-                    }
                     if (mataKuliahList.data?.isNotEmpty() == true) {
                         items(count = mataKuliahList.data?.size ?: 0) { index ->
                             val mataKuliah = mataKuliahList.data?.get(index)
@@ -106,7 +99,6 @@ fun PrediksiIPScreen(navController: NavController, navBarViewModel: NavBarViewMo
                 }
             }
         }
-        
     }
 }
 
