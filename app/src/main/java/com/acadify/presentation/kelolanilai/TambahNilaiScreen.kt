@@ -143,7 +143,7 @@ fun TambahNilaiScreen(navController: NavController) {
                         percentages.filter { it.second != null }.map { it.second!! }
                     val totalFilledPercentage = filledPercentages.sum()
                     
-                    if (totalFilledPercentage > 100f) {
+                    if (totalFilledPercentage != 100f) {
                         return@Button
                     }
                     
