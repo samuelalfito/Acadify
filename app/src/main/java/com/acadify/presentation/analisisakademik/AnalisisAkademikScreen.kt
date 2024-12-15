@@ -1,6 +1,5 @@
 package com.acadify.presentation.analisisakademik
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,7 +30,7 @@ fun AnalisisAkademikScreen(navController: NavController, navBarViewModel: NavBar
     val mataKuliahList = viewModel.mataKuliahList.collectAsState(initial = Resource.Loading())
     
     LaunchedEffect(Unit) {
-        viewModel.fetchKelolaNilai()
+        viewModel.fetchKelolaNilai(context)
     }
     
     Column(
@@ -48,7 +47,6 @@ fun AnalisisAkademikScreen(navController: NavController, navBarViewModel: NavBar
                     "Terjadi kesalahan. Coba lagi nanti.",
                     Toast.LENGTH_LONG
                 ).show()
-                Log.d("KelolaNilaiScreen", "Error: ${value.msg}")
             }
             
             is Resource.Loading -> {
